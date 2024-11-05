@@ -26,8 +26,9 @@ def get_current_date():
 # 근무 일지 저장 함수
 
 
+# 근무 일지 저장 함수
 def save_log():
-    name = name_var.get()
+    name = user_listbox.get(user_listbox.curselection())
     start_time = start_time_var.get()
     end_time = end_time_var.get()
     date = date_var.get()
@@ -39,6 +40,7 @@ def save_log():
         messagebox.showinfo("성공", "근무 일지가 저장되었습니다.")
     else:
         messagebox.showwarning("경고", "모든 필드를 입력해주세요.")
+
 
 # 사용자 추가 팝업 창 함수
 
@@ -70,6 +72,17 @@ def open_add_user_popup():
 def export_to_excel():
     file_path = excel.export_to_excel()
     messagebox.showinfo("성공", f"엑셀 파일로 저장되었습니다: {file_path}")
+
+# 데이터베이스 클리어 함수
+
+
+def clear_database():
+    if messagebox.askyesno("확인", "정말로 데이터베이스를 초기화하시겠습니까?"):
+        c.execute("DELETE FROM work_log")
+        c.execute("DELETE FROM users")
+        conn.commit()
+        user_listbox.delete(0, tk.END)
+        messagebox.showinfo("성공", "데이터베이스가 초기화되었습니다.")
 
 
 # Tkinter 윈도우 설정
@@ -119,6 +132,10 @@ tk.Button(root, text="저장", command=save_log).grid(
 # 엑셀로 내보내기 버튼
 tk.Button(root, text="엑셀로 내보내기", command=export_to_excel).grid(
     row=4, column=0, columnspan=2)
+
+# 데이터베이스 클리어 버튼
+tk.Button(root, text="데이터베이스 초기화", command=clear_database).grid(
+    row=5, column=0, columnspan=2)
 
 # 기존 사용자 로드
 c.execute("SELECT name FROM users")
