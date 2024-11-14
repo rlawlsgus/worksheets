@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime, timedelta
 import excel  # excel.py 파일을 import
 
+
 # 데이터베이스 초기화
 conn = sqlite3.connect('work_log.db')
 c = conn.cursor()
@@ -13,17 +14,14 @@ c.execute('''CREATE TABLE IF NOT EXISTS users
              (name TEXT)''')
 conn.commit()
 
+
 # 현재 날짜 설정 함수
-
-
 def get_current_date():
     now = datetime.now()
     if now.hour < 4:
         return (now - timedelta(days=1)).strftime('%Y-%m-%d')
     else:
         return now.strftime('%Y-%m-%d')
-
-# 근무 일지 저장 함수
 
 
 # 근무 일지 저장 함수
@@ -43,8 +41,6 @@ def save_log():
 
 
 # 사용자 추가 팝업 창 함수
-
-
 def open_add_user_popup():
     popup = Toplevel(root)
     popup.title("사용자 추가")
@@ -66,16 +62,14 @@ def open_add_user_popup():
     tk.Button(popup, text="추가", command=add_user).grid(
         row=1, column=0, columnspan=2)
 
+
 # 엑셀로 내보내기 함수
-
-
 def export_to_excel():
     file_path = excel.export_to_excel()
     messagebox.showinfo("성공", f"엑셀 파일로 저장되었습니다: {file_path}")
 
+
 # 데이터베이스 클리어 함수
-
-
 def clear_database():
     if messagebox.askyesno("확인", "정말로 데이터베이스를 초기화하시겠습니까?"):
         c.execute("DELETE FROM work_log")
@@ -89,22 +83,24 @@ def clear_database():
 root = tk.Tk()
 root.title("근무 일지 작성기")
 
+
 # 이름 선택
 tk.Label(root, text="이름:").grid(row=0, column=0)
 name_var = tk.StringVar()
 user_listbox = tk.Listbox(root, listvariable=name_var, height=5)
 user_listbox.grid(row=0, column=1)
 
+
 # 사용자 추가 버튼
 tk.Button(root, text="사용자 추가", command=open_add_user_popup).grid(
     row=0, column=2)
 
+
 # 날짜 자동 설정
 date_var = tk.StringVar(value=get_current_date())
 
+
 # 시간 선택 (30분 단위)
-
-
 def generate_time_options():
     times = []
     for hour in range(24):
