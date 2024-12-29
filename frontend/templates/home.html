@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>혜성과학 조교 관리</title>
+    <link rel="stylesheet" href="../static/css/home.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="../static/js/app.js"></script>
+  </head>
+  <body>
+    <div class="home">
+      <!-- 사이드바 -->
+      <aside class="sidebar">
+        <h1 class="title">혜성과학 조교 관리</h1>
+
+        <!-- 메뉴 섹션 -->
+        <section class="menu">
+          <h2>메뉴</h2>
+          <div class="menu-buttons">
+            <button class="menu-button active">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 22V12H15V22"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>홈</span>
+            </button>
+            <button class="menu-button">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.8638 12.5L6.13599 12.5"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12.4999 18.8639L12.5 6.13608"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>조교 추가</span>
+            </button>
+            <button class="menu-button">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0_23_111)">
+                  <path
+                    d="M18.5 18.364L5.5 18.364"
+                    stroke="black"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M11.2929 15.7071C11.6834 16.0976 12.3166 16.0976 12.7071 15.7071L19.0711 9.34315C19.4616 8.95262 19.4616 8.31946 19.0711 7.92893C18.6805 7.53841 18.0474 7.53841 17.6569 7.92893L12 13.5858L6.34315 7.92893C5.95262 7.53841 5.31946 7.53841 4.92893 7.92893C4.53841 8.31946 4.53841 8.95262 4.92893 9.34315L11.2929 15.7071ZM11 2V15H13V2H11Z"
+                    fill="black"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_23_111">
+                    <rect width="24" height="24" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+              <span>내보내기</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 조교 목록 섹션 -->
+        <section class="members">
+          <h2>조교 목록</h2>
+          <div class="member-buttons">
+            <button class="member-button active">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 9H9.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M15 9H15.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>김진현</span>
+            </button>
+            <button class="member-button">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 9H9.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M15 9H15.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>이준서</span>
+            </button>
+            <button class="member-button">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 9H9.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M15 9H15.01"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>허지원</span>
+            </button>
+          </div>
+        </section>
+      </aside>
+
+      <!-- 구분선 -->
+      <div class="divider"></div>
+
+      <!-- 메인 컨텐츠 -->
+      <main class="main-content">
+        <!-- 과목 전환 -->
+        <nav class="subject-nav">
+          <div class="subject-container">
+            <button class="subject-button active">화학</button>
+            <button class="subject-button">생명</button>
+            <button class="subject-button">지학</button>
+          </div>
+        </nav>
+
+        <!-- 프로필 섹션 -->
+        <section class="profile">
+          <div class="profile-info">
+            <div class="profile-image">화학</div>
+            <div class="profile-details">
+              <h2>김진현</h2>
+              <p>하나은행 000-0000000-000</p>
+            </div>
+          </div>
+        </section>
+        <button class="edit-button">조교 정보 수정</button>
+
+        <!-- 근무 일지 -->
+        <section class="attendance-log">
+          <div class="log-header">
+            <button class="prev-month"><</button>
+            <h3>11월 근무 일지</h3>
+            <button class="next-month">></button>
+          </div>
+          <div class="attendance-table">
+            <div class="table-header">
+              <span>Date</span>
+              <span>Start</span>
+              <span>End</span>
+              <span>근무시간</span>
+            </div>
+            <div class="table-row">
+              <span>11/9</span>
+              <span>12</span>
+              <span>22</span>
+              <span>10</span>
+            </div>
+            <div class="table-row selected">
+              <span>11/16</span>
+              <span>10</span>
+              <span>22</span>
+              <span>12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 시작 시간 -->
+        <section class="start-time">
+          <h3>시작 시간</h3>
+          <div class="time-wrapper">
+            <div class="date-picker">
+              <label for="start-date">날짜</label>
+              <input type="date" id="start-date" class="date-input" />
+            </div>
+            <div class="time-display">
+              <div class="time-box hour-box" data-type="hour">12</div>
+              <span class="time-colon">:</span>
+              <div class="time-box minute-box" data-type="minute">30</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 종료 시간 -->
+        <section class="end-time">
+          <h3>종료 시간</h3>
+          <div class="time-wrapper">
+            <div class="date-picker">
+              <label for="end-date">날짜</label>
+              <input type="date" id="end-date" class="date-input" />
+            </div>
+            <div class="time-display">
+              <div class="time-box hour-box" data-type="hour">18</div>
+              <span class="time-colon">:</span>
+              <div class="time-box minute-box" data-type="minute">30</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 버튼 그룹 -->
+        <button class="delete-button">일지 삭제</button>
+        <button class="add-button">일지 추가</button>
+      </main>
+    </div>
+  </body>
+</html>
