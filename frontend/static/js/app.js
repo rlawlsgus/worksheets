@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   // 모든 .menu-button 요소를 선택
   const menuButtons = document.querySelectorAll(".menu-button");
 
@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // 과목 전환 애니메이션
   // 모든 subject-button 요소를 선택
   const subjectButtons = document.querySelectorAll(".subject-button");
   // subject-container를 선택
@@ -60,8 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 초기 위치 설정
   updateIndicator();
-
-  // 화면 크기 변화에 대응
+  // 화면 크기 변화에 대응 -> 이거 꼭 필요한가 모르겠음
   window.addEventListener("resize", updateIndicator);
 
   // 모든 근무시간 행 선택
@@ -70,27 +70,25 @@ document.addEventListener("DOMContentLoaded", function () {
   // 각 행에 클릭 이벤트 추가
   tableRows.forEach((row) => {
     row.addEventListener("click", () => {
-      // 클릭 시 selected 클래스 토글
+      // 클릭 시 selected 클래스 토글 -> 선택됨
       row.classList.toggle("selected");
     });
   });
 
-  // TA info edit button event
-  document.querySelector(".edit-button").addEventListener("click", function () {
-    // TA info edit button click event logic
+  // 조교 정보 수정 버튼 이벤트
+  document.querySelector(".edit-button").addEventListener("click", () => {
+    // 수정 누르면 해당 조교 정보 수정하는 페이지로 이동하는 코드 써야함함
   });
 
-  // Add log button event
-  document.querySelector(".add-button").addEventListener("click", function () {
-    // Add log button click event logic
+  // 일지 추가 버튼 이벤트
+  document.querySelector(".add-button").addEventListener("click", () => {
+    // 추가 누르면 시작 시간, 종료 시간 반양해서 로그 추가하는 코드 써야함
   });
 
-  // Delete log button event
-  document
-    .querySelector(".delete-button")
-    .addEventListener("click", function () {
-      // Delete log button click event logic
-    });
+  // 일지 삭제 버튼 이벤트
+  document.querySelector(".delete-button").addEventListener("click", () => {
+    // 삭제 누르면 선택된 로그 삭제하는 코드 써야함
+  });
 });
 
 document.addEventListener("DOMContentLoaded", () => {
