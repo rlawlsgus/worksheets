@@ -1,29 +1,203 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // API 기본 URL
+  const API_BASE_URL = "http://localhost:5000/api";
+
+  // API 요청 함수들
+  const api = {
+    // 조교 관련 API
+    assistants: {
+      getAll: () =>
+        fetch(`${API_BASE_URL}/assistant`).then((res) => res.json()),
+      get: (id) =>
+        fetch(`${API_BASE_URL}/assistant/${id}`).then((res) => res.json()),
+      update: (id, data) =>
+        fetch(`${API_BASE_URL}/assistant/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }).then((res) => res.json()),
+      create: (data) =>
+        fetch(`${API_BASE_URL}/assistant`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }).then((res) => res.json()),
+    },
+    // 근무일지 관련 API
+    worklog: {
+      getMonthly: (assistantId, year, month) =>
+        fetch(`${API_BASE_URL}/worklogs/${assistantId}/${year}/${month}`).then(
+          (res) => res.json()
+        ),
+      create: (data) =>
+        fetch(`${API_BASE_URL}/worklog`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }).then((res) => res.json()),
+      delete: (id) =>
+        fetch(`${API_BASE_URL}/worklog/${id}`, {
+          method: "DELETE",
+        }).then((res) => res.json()),
+    },
+  };
+
+  // 현재 선택된 조교 ID를 저장할 변수
+  let currentAssistantId = null;
+
   // 모든 .menu-button 요소를 선택
   const menuButtons = document.querySelectorAll(".menu-button");
-
-  // 각 버튼에 클릭 이벤트 추가
   menuButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      // 모든 버튼에서 active 클래스 제거
       menuButtons.forEach((btn) => btn.classList.remove("active"));
-      // 클릭한 버튼에 active 클래스 추가
       button.classList.add("active");
+
+      // "조교 추가" 버튼 클릭 시
+      if (button.querySelector("span").textContent === "조교 추가") {
+        const name = prompt("조교 이름을 입력하세요:");
+        if (name) {
+          const bankAccount = prompt("계좌번호를 입력하세요:");
+          const subject = prompt("담당 과목을 입력하세요 (화학/생명/지학):");
+
+          api.assistants
+            .create({
+              name,
+              bank_account: bankAccount,
+              subject,
+            })
+            .then(() => {
+              // 페이지 새로고침하여 목록 업데이트
+              location.reload();
+            });
+        }
+      }
     });
   });
 
-  // 모든 .member-button 요소를 선택
+  // 조교 목록 불러오기 및 이벤트 설정
   const memberButtons = document.querySelectorAll(".member-button");
-
-  // 각 버튼에 클릭 이벤트 추가
   memberButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      // 모든 버튼에서 active 클래스 제거
+    button.addEventListener("click", async () => {
       memberButtons.forEach((btn) => btn.classList.remove("active"));
-      // 클릭한 버튼에 active 클래스 추가
       button.classList.add("active");
+
+      // 조교 이름에서 ID 가져오기 (버튼의 data-id 속성 사용 가정)
+      currentAssistantId = button.dataset.id;
+      const assistantData = await api.assistants.get(currentAssistantId);
+
+      // 조교 정보 업데이트
+      document.querySelector(".profile-details h2").textContent =
+        assistantData.name;
+      document.querySelector(".profile-details p").textContent =
+        assistantData.bank_account;
+
+      // 근무 일지 불러오기
+      loadWorkLogs();
     });
   });
+
+  // 근무 일지 불러오기 함수
+  async function loadWorkLogs() {
+    if (!currentAssistantId) return;
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+
+    const logs = await api.worklog.getMonthly(currentAssistantId, year, month);
+    const tableBody = document.querySelector(".attendance-table");
+
+    // 헤더를 제외한 기존 행들 제거
+    const rows = tableBody.querySelectorAll(".table-row");
+    rows.forEach((row) => row.remove());
+
+    // 새로운 근무 기록 추가
+    logs.forEach((log) => {
+      const row = document.createElement("div");
+      row.className = "table-row";
+      row.dataset.id = log.id;
+      row.innerHTML = `
+        <span>${log.date.split("-")[2]}</span>
+        <span>${log.start_time}</span>
+        <span>${log.end_time}</span>
+        <span>${log.work_hours}</span>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // 조교 정보 수정 버튼 이벤트
+  document.querySelector(".edit-button").addEventListener("click", async () => {
+    if (!currentAssistantId) {
+      alert("조교를 선택해주세요.");
+      return;
+    }
+
+    const assistantData = await api.assistants.get(currentAssistantId);
+    const name = prompt("조교 이름:", assistantData.name);
+    const bankAccount = prompt("계좌번호:", assistantData.bank_account);
+    const subject = prompt(
+      "담당 과목 (화학/생명/지학):",
+      assistantData.subject
+    );
+
+    if (name && bankAccount && subject) {
+      await api.assistants.update(currentAssistantId, {
+        name,
+        bank_account: bankAccount,
+        subject,
+      });
+      location.reload();
+    }
+  });
+
+  // 일지 추가 버튼 이벤트
+  document.querySelector(".add-button").addEventListener("click", async () => {
+    if (!currentAssistantId) {
+      alert("조교를 선택해주세요.");
+      return;
+    }
+
+    const startDate = document.querySelector("#start-date").value;
+    const endDate = document.querySelector("#end-date").value;
+    const startHour = document.querySelector(
+      ".start-time .hour-box"
+    ).textContent;
+    const startMinute = document.querySelector(
+      ".start-time .minute-box"
+    ).textContent;
+    const endHour = document.querySelector(".end-time .hour-box").textContent;
+    const endMinute = document.querySelector(
+      ".end-time .minute-box"
+    ).textContent;
+
+    const worklog = {
+      assistant_id: currentAssistantId,
+      start_time: `${startDate} ${startHour}:${startMinute}`,
+      end_time: `${endDate} ${endHour}:${endMinute}`,
+    };
+
+    await api.worklog.create(worklog);
+    loadWorkLogs();
+  });
+
+  // 일지 삭제 버튼 이벤트
+  document
+    .querySelector(".delete-button")
+    .addEventListener("click", async () => {
+      const selectedRows = document.querySelectorAll(".table-row.selected");
+      if (selectedRows.length === 0) {
+        alert("삭제할 근무 기록을 선택해주세요.");
+        return;
+      }
+
+      if (confirm("선택한 근무 기록을 삭제하시겠습니까?")) {
+        for (const row of selectedRows) {
+          await api.worklog.delete(row.dataset.id);
+        }
+        loadWorkLogs();
+      }
+    });
 
   // 과목 전환 애니메이션
   // 모든 subject-button 요소를 선택
@@ -64,34 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 화면 크기 변화에 대응 -> 이거 꼭 필요한가 모르겠음
   window.addEventListener("resize", updateIndicator);
 
-  // 모든 근무시간 행 선택
-  const tableRows = document.querySelectorAll(".table-row");
-
-  // 각 행에 클릭 이벤트 추가
-  tableRows.forEach((row) => {
-    row.addEventListener("click", () => {
-      // 클릭 시 selected 클래스 토글 -> 선택됨
-      row.classList.toggle("selected");
-    });
-  });
-
-  // 조교 정보 수정 버튼 이벤트
-  document.querySelector(".edit-button").addEventListener("click", () => {
-    // 수정 누르면 해당 조교 정보 수정하는 페이지로 이동하는 코드 써야함함
-  });
-
-  // 일지 추가 버튼 이벤트
-  document.querySelector(".add-button").addEventListener("click", () => {
-    // 추가 누르면 시작 시간, 종료 시간 반양해서 로그 추가하는 코드 써야함
-  });
-
-  // 일지 삭제 버튼 이벤트
-  document.querySelector(".delete-button").addEventListener("click", () => {
-    // 삭제 누르면 선택된 로그 삭제하는 코드 써야함
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
   const timeBoxes = document.querySelectorAll(".time-box");
   const dateInputs = document.querySelectorAll(".date-input");
 
