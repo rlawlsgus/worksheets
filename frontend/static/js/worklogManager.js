@@ -4,8 +4,8 @@ export class WorklogManager {
   constructor() {
     this.currentAssistantId = 1;
     this.currentDate = new Date();
-    this.initializeMonthNavigation();
     this.initializeButtons();
+    this.initializeMonthNavigation();
   }
 
   initializeButtons() {
@@ -15,6 +15,9 @@ export class WorklogManager {
     document
       .querySelector(".delete-button")
       ?.addEventListener("click", () => this.deleteWorklogs());
+    document
+      .querySelector(".export-button")
+      ?.addEventListener("click", () => this.exportWorklogs());
   }
 
   initializeMonthNavigation() {
@@ -144,6 +147,29 @@ export class WorklogManager {
         console.error("Failed to delete worklogs:", error);
         alert("근무 기록 삭제에 실패했습니다.");
       }
+    }
+  }
+
+  async exportWorklogs() {
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth() + 1;
+
+    try {
+      const blob = await api.worklog.exportLogs(year, month);
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `worklog_${year}_${month}.xlsx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to export worklogs:", error);
+      alert("근무 기록을 내보내는 데 실패했습니다.");
     }
   }
 }

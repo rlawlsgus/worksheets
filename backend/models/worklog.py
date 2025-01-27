@@ -6,7 +6,7 @@ from datetime import datetime
 class WorkLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assistant_id = db.Column(db.Integer, db.ForeignKey(
-        'assistant.id'), nullable=False)
+        "assistant.id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
@@ -14,10 +14,10 @@ class WorkLog(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'assistant_id': self.assistant_id,
-            'date': self.date.strftime('%Y-%m-%d'),
-            'start_time': self.start_time.strftime('%H:%M'),
-            'end_time': self.end_time.strftime('%H:%M'),
-            'work_hours': self.work_hours
+            "id": self.id,
+            "assistant_id": self.assistant_id,
+            "date": self.date.strftime("%Y-%m-%d"),
+            "start_time": self.start_time.strftime("%H:%M"),
+            "end_time": self.end_time.strftime("%H:%M"),
+            "work_hours": self.work_hours
         }

@@ -10,13 +10,13 @@ import os
 
 def create_app():
     app = Flask(__name__,
-                static_folder='../frontend/static',
-                template_folder='../frontend/templates')
+                static_folder="../frontend/static",
+                template_folder="../frontend/templates")
 
     # 설정
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-key-change-this')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assistants.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key-change-this")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///assistants.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # 데이터베이스 초기화
     db.init_app(app)
@@ -35,6 +35,6 @@ def create_app():
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)

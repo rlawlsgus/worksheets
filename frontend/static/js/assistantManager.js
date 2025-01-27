@@ -4,9 +4,15 @@ export class AssistantManager {
   constructor() {
     this.currentAssistantId = 1;
     this.assistantList = [];
-    this.initializeMenuButtons();
+    this.initializeButtons();
     this.initializeEditButton();
     this.loadAssistantList();
+  }
+
+  initializeButtons() {
+    document
+      .querySelector(".add-assistant-button")
+      ?.addEventListener("click", () => this.createAssistant());
   }
 
   async loadAssistantList() {
@@ -119,12 +125,6 @@ export class AssistantManager {
       console.error("Failed to load assistant details:", error);
       alert("조교 정보를 불러오는 데 실패했습니다.");
     }
-  }
-
-  initializeMenuButtons() {
-    document
-      .querySelector(".add-assistant-button")
-      ?.addEventListener("click", () => this.createAssistant());
   }
 
   async createAssistant() {
