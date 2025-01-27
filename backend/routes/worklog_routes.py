@@ -66,11 +66,14 @@ def export_worklog(year, month):
 
     wb.remove(wb.active)
 
-    header_fill = PatternFill(start_color='1E4E79',
-                              end_color='1E4E79', fill_type='solid')
-    stripe_fill = PatternFill(start_color='F5F5F5',
-                              end_color='F5F5F5', fill_type='solid')
+    header_fill = PatternFill(start_color='8064A2',
+                              end_color='8064A2', fill_type='solid')
+    stripe_fill = PatternFill(start_color='E4DFEC',
+                              end_color='E4DFEC', fill_type='solid')
     header_font = Font(color='FFFFFF', bold=True)
+    title_font = Font(color='FFFFFF', size=14)
+    title_fill = PatternFill(start_color='1F497D',
+                             end_color='1F497D', fill_type='solid')
     border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -80,7 +83,16 @@ def export_worklog(year, month):
     center_alignment = Alignment(horizontal='center', vertical='center')
 
     for assistant in assistants:
-        sheet = wb.create_sheet(title=f"{month}월 근무 {assistant.name}")
+        sheet = wb.create_sheet(title=f"{assistant.name}")
+
+        title = f"{month}월 급여 {assistant.name} ({assistant.bank_account})"
+        sheet.merge_cells('A1:F2')
+        title_cell = sheet.cell(row=1, column=1)
+        title_cell.value = title
+        title_cell.fill = title_fill
+        title_cell.font = title_font
+        title_cell.border = border
+        title_cell.alignment = center_alignment
 
         sheet.column_dimensions["A"].width = 15  # 날짜
         sheet.column_dimensions["B"].width = 15  # 출근시간
@@ -91,14 +103,14 @@ def export_worklog(year, month):
 
         headers = ["날짜", "출근시간", "퇴근시간", "총시간", "시급", "금액"]
         for col, header in enumerate(headers, 1):
-            cell = sheet.cell(row=1, column=col)
+            cell = sheet.cell(row=3, column=col)
             cell.value = header
             cell.fill = header_fill
             cell.font = header_font
             cell.border = border
             cell.alignment = center_alignment
 
-        for row in range(2, 31):
+        for row in range(4, 31):
             for col in range(1, 7):
                 cell = sheet.cell(row=row, column=col)
                 cell.border = border
@@ -112,7 +124,7 @@ def export_worklog(year, month):
             extract("month", WorkLog.date) == month
         ).order_by(WorkLog.date).all()
 
-        current_row = 2
+        current_row = 4
         total_amount = 0
         pointfive = 0
         tax = 0
