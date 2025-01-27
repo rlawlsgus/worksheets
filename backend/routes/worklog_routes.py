@@ -25,3 +25,28 @@ def add_worklog():
     db.session.add(worklog)
     db.session.commit()
     return jsonify({'success': True, 'id': worklog.id})
+
+
+@worklog_bp.route('/api/worklogs/<int:assistant_id>/<int:year>/<int:month>', methods=['GET'])
+def get_monthly_worklogs(assistant_id, year, month):
+    worklogs = WorkLog.query.filter(
+        WorkLog.assistant_id == assistant_id,
+        db.extract('year', WorkLog.date) == year,
+        db.extract('month', WorkLog.date) == month
+    ).order_by(WorkLog.date).all()
+
+    return jsonify([{
+        'id': log.id,
+        'date': log.date.strftime('%Y-%m-%d'),
+        'start_time': log.start_time.strftime('%H:%M'),
+        'end_time': log.end_time.strftime('%H:%M'),
+        'work_hours': log.work_hours
+    } for log in worklogs])
+
+
+@worklog_bp.route('/api/worklog/<int:id>', methods=['DELETE'])
+def delete_worklog(id):
+    worklog = WorkLog.query.get_or_404(id)
+    db.session.delete(worklog)
+    db.session.commit()
+    return jsonify({'success': True})

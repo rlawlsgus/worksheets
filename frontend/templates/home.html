@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script src="../static/js/app.js"></script>
+    <script type="module" src="../static/js/main.js"></script>
   </head>
   <body>
     <div class="home">
@@ -46,7 +46,7 @@
               </svg>
               <span>홈</span>
             </button>
-            <button class="menu-button">
+            <button class="menu-button add-assistant-button">
               <svg
                 width="24"
                 height="24"
@@ -71,7 +71,7 @@
               </svg>
               <span>조교 추가</span>
             </button>
-            <button class="menu-button">
+            <button class="menu-button export-button">
               <svg
                 width="24"
                 height="24"
@@ -98,7 +98,7 @@
                   </clipPath>
                 </defs>
               </svg>
-              <span>내보내기</span>
+              <span>내보내기(.xlsx)</span>
             </button>
           </div>
         </section>
@@ -106,125 +106,7 @@
         <!-- 조교 목록 섹션 -->
         <section class="members">
           <h2>조교 목록</h2>
-          <div class="member-buttons">
-            <button class="member-button active">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M9 9H9.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M15 9H15.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>김진현</span>
-            </button>
-            <button class="member-button">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M9 9H9.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M15 9H15.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>정신영</span>
-            </button>
-            <button class="member-button">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M9 9H9.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M15 9H15.01"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>최선재</span>
-            </button>
-          </div>
+          <div class="member-buttons"></div>
         </section>
       </aside>
 
@@ -247,8 +129,8 @@
           <div class="profile-info">
             <div class="profile-image">화학</div>
             <div class="profile-details">
-              <h2>김진현</h2>
-              <p>하나은행 000-0000000-000</p>
+              <h2></h2>
+              <p></p>
             </div>
           </div>
         </section>
@@ -258,7 +140,7 @@
         <section class="attendance-log">
           <div class="log-header">
             <button class="prev-month"><</button>
-            <h3>11월 근무 일지</h3>
+            <h3></h3>
             <button class="next-month">></button>
           </div>
           <div class="attendance-table">
@@ -267,18 +149,6 @@
               <span>Start</span>
               <span>End</span>
               <span>근무시간</span>
-            </div>
-            <div class="table-row">
-              <span>11/9</span>
-              <span>12</span>
-              <span>22</span>
-              <span>10</span>
-            </div>
-            <div class="table-row selected">
-              <span>11/16</span>
-              <span>10</span>
-              <span>22</span>
-              <span>12</span>
             </div>
           </div>
         </section>
@@ -292,9 +162,9 @@
               <input type="date" id="start-date" class="date-input" />
             </div>
             <div class="time-display">
-              <div class="time-box hour-box" data-type="hour">12</div>
+              <div class="time-box hour-box" data-type="hour"></div>
               <span class="time-colon">:</span>
-              <div class="time-box minute-box" data-type="minute">30</div>
+              <div class="time-box minute-box" data-type="minute"></div>
             </div>
           </div>
         </section>
@@ -308,9 +178,9 @@
               <input type="date" id="end-date" class="date-input" />
             </div>
             <div class="time-display">
-              <div class="time-box hour-box" data-type="hour">18</div>
+              <div class="time-box hour-box" data-type="hour"></div>
               <span class="time-colon">:</span>
-              <div class="time-box minute-box" data-type="minute">30</div>
+              <div class="time-box minute-box" data-type="minute"></div>
             </div>
           </div>
         </section>

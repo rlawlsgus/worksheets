@@ -12,6 +12,7 @@ def add_assistant():
     assistant = Assistant(
         name=data['name'],
         bank_account=data['bank_account'],
+        salary=data['salary'],
         subject=data['subject']
     )
     db.session.add(assistant)
@@ -25,6 +26,31 @@ def update_assistant(id):
     data = request.json
     assistant.name = data.get('name', assistant.name)
     assistant.bank_account = data.get('bank_account', assistant.bank_account)
+    assistant.salary = data.get('salary', assistant.salary)
     assistant.subject = data.get('subject', assistant.subject)
     db.session.commit()
     return jsonify({'success': True})
+
+
+@assistant_bp.route('/api/assistant', methods=['GET'])
+def get_assistants():
+    assistants = Assistant.query.all()
+    return jsonify([{
+        'id': assistant.id,
+        'name': assistant.name,
+        'bank_account': assistant.bank_account,
+        'salary': assistant.salary,
+        'subject': assistant.subject
+    } for assistant in assistants])
+
+
+@assistant_bp.route('/api/assistant/<int:id>', methods=['GET'])
+def get_assistant(id):
+    assistant = Assistant.query.get_or_404(id)
+    return jsonify({
+        'id': assistant.id,
+        'name': assistant.name,
+        'bank_account': assistant.bank_account,
+        'salary': assistant.salary,
+        'subject': assistant.subject
+    })

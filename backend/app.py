@@ -1,5 +1,6 @@
 # backend/app.py
 from flask import Flask
+from flask_cors import CORS
 from database.db import db
 from routes.assistant_routes import assistant_bp
 from routes.worklog_routes import worklog_bp
@@ -28,6 +29,8 @@ def create_app():
     # 데이터베이스 생성
     with app.app_context():
         db.create_all()
+
+    CORS(app)
 
     return app
 
