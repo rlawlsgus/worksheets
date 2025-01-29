@@ -66,17 +66,14 @@ export class WorklogManager {
   renderWorkLogs(logs) {
     const tableBody = document.querySelector(".attendance-table");
 
-    // 기존 행 제거 (헤더 제외)
     const existingRows = tableBody.querySelectorAll(".table-row");
     existingRows.forEach((row) => row.remove());
 
-    // 새로운 근무 기록 추가
     logs.forEach((log) => {
       const row = document.createElement("div");
       row.className = "table-row";
       row.dataset.id = log.id;
 
-      // 날짜 형식 변경 (YYYY-MM-DD -> MM/DD)
       const date = new Date(log.date);
       const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 

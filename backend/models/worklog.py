@@ -1,6 +1,5 @@
 # backend/models/worklog.py
 from database.db import db
-from datetime import datetime
 
 
 class WorkLog(db.Model):

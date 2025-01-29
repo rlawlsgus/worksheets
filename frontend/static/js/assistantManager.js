@@ -2,8 +2,10 @@ import { api } from "./api.js";
 
 export class AssistantManager {
   constructor() {
-    this.currentAssistantId = 1;
+    this.currentAssistantId = null;
+    this.currentSubject = "화학";
     this.assistantList = [];
+    this.filteredAssistantList = [];
     this.initializeButtons();
     this.initializeEditButton();
     this.loadAssistantList();
@@ -13,6 +15,18 @@ export class AssistantManager {
     document
       .querySelector(".add-assistant-button")
       ?.addEventListener("click", () => this.createAssistant());
+
+    const subjectButtons = document.querySelectorAll(".subject-button");
+
+    subjectButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        this.currentSubject = e.target.id;
+        this.renderAssistantButtons();
+        if (this.filteredAssistantList.length > 0) {
+          this.selectAssistant(this.filteredAssistantList[0].id);
+        }
+      });
+    });
   }
 
   async loadAssistantList() {
@@ -20,8 +34,8 @@ export class AssistantManager {
       this.assistantList = await api.assistants.getAll();
       this.renderAssistantButtons();
 
-      if (this.assistantList.length > 0) {
-        await this.selectAssistant(this.assistantList[0].id);
+      if (this.filteredAssistantList.length > 0) {
+        await this.selectAssistant(this.filteredAssistantList[0].id);
       }
     } catch (error) {
       console.error("Failed to load assistants:", error);
@@ -29,23 +43,28 @@ export class AssistantManager {
     }
   }
 
+  getFilteredAssistantList() {
+    return this.assistantList.filter(
+      (assistant) => assistant.subject === this.currentSubject
+    );
+  }
+
   renderAssistantButtons() {
     const memberButtonsContainer = document.querySelector(".member-buttons");
-    memberButtonsContainer.innerHTML = ""; // Clear existing buttons
+    memberButtonsContainer.innerHTML = "";
 
-    this.assistantList.forEach((assistant) => {
+    this.filteredAssistantList = this.getFilteredAssistantList();
+
+    this.filteredAssistantList.forEach((assistant) => {
       const button = document.createElement("button");
       button.className = "member-button";
       button.dataset.id = assistant.id;
 
-      // Create SVG element
       const svg = this.createUserSVG();
 
-      // Create span for name
       const span = document.createElement("span");
       span.textContent = assistant.name;
 
-      // Append SVG and span to button
       button.appendChild(svg);
       button.appendChild(span);
 
@@ -102,7 +121,6 @@ export class AssistantManager {
       const memberButtons = document.querySelectorAll(".member-button");
       memberButtons.forEach((btn) => btn.classList.remove("active"));
 
-      // Activate selected button
       const selectedButton = document.querySelector(
         `.member-button[data-id="${assistantId}"]`
       );
@@ -111,11 +129,12 @@ export class AssistantManager {
       this.currentAssistantId = assistantId;
       const assistantData = await api.assistants.get(assistantId);
 
-      // 프로필 정보 업데이트
       document.querySelector(".profile-details h2").textContent =
         assistantData.name;
       document.querySelector(".profile-details p").textContent =
         assistantData.bank_account;
+      document.querySelector(".profile-image").textContent =
+        assistantData.subject;
 
       // 근무 일지 로드 콜백 호출
       if (this.onAssistantSelect) {
@@ -141,7 +160,6 @@ export class AssistantManager {
         subject,
       });
 
-      // 페이지 새로고침하여 목록 업데이트
       location.reload();
     }
   }
@@ -153,7 +171,6 @@ export class AssistantManager {
         memberButtons.forEach((btn) => btn.classList.remove("active"));
         button.classList.add("active");
 
-        // 조교 이름에서 ID 가져오기 (버튼의 data-id 속성 사용 가정)
         this.currentAssistantId = button.dataset.id;
         await this.updateProfileDetails();
       });
@@ -165,11 +182,12 @@ export class AssistantManager {
 
     const assistantData = await api.assistants.get(this.currentAssistantId);
 
-    // 조교 정보 업데이트
     document.querySelector(".profile-details h2").textContent =
       assistantData.name;
     document.querySelector(".profile-details p").textContent =
       assistantData.bank_account;
+    document.querySelector(".profile-image").textContent =
+      assistantData.subject;
 
     // 근무 일지 불러오기 (외부에서 주입받아야 할 콜백)
     if (this.onAssistantSelect) {
@@ -211,7 +229,6 @@ export class AssistantManager {
     }
   }
 
-  // 옵션: 현재 선택된 조교의 ID를 반환
   getCurrentAssistantId() {
     return this.currentAssistantId;
   }
