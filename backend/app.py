@@ -14,7 +14,7 @@ def create_app():
                 template_folder="../frontend/templates")
 
     # 설정
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key-change-this")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///assistants.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 

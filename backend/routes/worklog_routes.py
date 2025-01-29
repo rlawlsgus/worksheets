@@ -135,9 +135,8 @@ def export_worklog(year, month):
             start_time = log.start_time.strftime("%H:%M")
             end_time = log.end_time.strftime("%H:%M")
 
-            work_hours = f"{int(log.work_hours):02d}:{
-                (log.work_hours % 1 * 60):02.0f}"
-
+            work_hours = f"{int(log.work_hours):02d}:{(log.work_hours % 1 * 60):02.0f}"
+            
             amount = log.work_hours * assistant.salary
             total_amount += amount
 
