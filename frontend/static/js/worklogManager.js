@@ -4,6 +4,7 @@ export class WorklogManager {
   constructor() {
     this.currentAssistantId = 1;
     this.currentDate = new Date();
+    this.currentDate.setDate(1);
     this.initializeButtons();
     this.initializeMonthNavigation();
   }
@@ -32,7 +33,6 @@ export class WorklogManager {
 
   changeMonth(delta) {
     this.currentDate.setMonth(this.currentDate.getMonth() + delta);
-    console.log(this.currentDate);
     this.updateMonthHeader();
     this.loadWorkLogs();
   }
@@ -112,18 +112,32 @@ export class WorklogManager {
       ".end-time .minute-box"
     ).textContent;
 
-    const worklog = {
-      assistant_id: this.currentAssistantId,
-      start_time: `${startDate} ${startHour}:${startMinute}`,
-      end_time: `${endDate} ${endHour}:${endMinute}`,
-    };
+    const start_time = new Date(
+      `${startDate}T${startHour.padStart(2, "0")}:${startMinute.padStart(
+        2,
+        "0"
+      )}`
+    );
+    const end_time = new Date(
+      `${endDate}T${endHour.padStart(2, "0")}:${endMinute.padStart(2, "0")}`
+    );
 
-    try {
-      await api.worklog.create(worklog);
-      this.loadWorkLogs();
-    } catch (error) {
-      console.error("Failed to create worklog:", error);
-      alert("근무 기록 추가에 실패했습니다.");
+    if (start_time >= end_time) {
+      alert("시작 시간이 종료 시간보다 늦거나 같을 수 없습니다.");
+    } else {
+      const worklog = {
+        assistant_id: this.currentAssistantId,
+        start_time: `${startDate} ${startHour}:${startMinute}`,
+        end_time: `${endDate} ${endHour}:${endMinute}`,
+      };
+
+      try {
+        await api.worklog.create(worklog);
+        this.loadWorkLogs();
+      } catch (error) {
+        console.error("Failed to create worklog:", error);
+        alert("근무 기록 추가에 실패했습니다.");
+      }
     }
   }
 
