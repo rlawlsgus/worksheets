@@ -46,7 +46,8 @@ def get_monthly_worklogs(assistant_id, year, month):
         "date": log.date.strftime("%Y-%m-%d"),
         "start_time": log.start_time.strftime("%H:%M"),
         "end_time": log.end_time.strftime("%H:%M"),
-        "work_hours": log.work_hours
+        "work_hours": log.work_hours,
+        "checked": log.checked
     } for log in worklogs])
 
 
@@ -54,6 +55,16 @@ def get_monthly_worklogs(assistant_id, year, month):
 def delete_worklog(id):
     worklog = WorkLog.query.get_or_404(id)
     db.session.delete(worklog)
+    db.session.commit()
+    return jsonify({"success": True})
+
+@worklog_bp.route("/api/worklogs/check", methods=["PUT"])
+def check_worklog():
+    changed_rows = request.json
+    for row in changed_rows:
+        log = WorkLog.query.get(row['id'])
+        if log:
+            log.checked = row['checked']
     db.session.commit()
     return jsonify({"success": True})
 
@@ -66,27 +77,27 @@ def export_worklog(year, month):
 
     wb.remove(wb.active)
 
-    header_fill = PatternFill(start_color='8064A2',
-                              end_color='8064A2', fill_type='solid')
-    stripe_fill = PatternFill(start_color='E4DFEC',
-                              end_color='E4DFEC', fill_type='solid')
-    header_font = Font(color='FFFFFF', bold=True)
-    title_font = Font(color='FFFFFF', size=14)
-    title_fill = PatternFill(start_color='1F497D',
-                             end_color='1F497D', fill_type='solid')
+    header_fill = PatternFill(start_color="8064A2",
+                              end_color="8064A2", fill_type="solid")
+    stripe_fill = PatternFill(start_color="E4DFEC",
+                              end_color="E4DFEC", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True)
+    title_font = Font(color="FFFFFF", size=14)
+    title_fill = PatternFill(start_color="1F497D",
+                             end_color="1F497D", fill_type="solid")
     border = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
+        left=Side(style="thin"),
+        right=Side(style="thin"),
+        top=Side(style="thin"),
+        bottom=Side(style="thin")
     )
-    center_alignment = Alignment(horizontal='center', vertical='center')
+    center_alignment = Alignment(horizontal="center", vertical="center")
 
     for assistant in assistants:
         sheet = wb.create_sheet(title=f"{assistant.name}")
 
         title = f"{month}월 급여 {assistant.name} ({assistant.bank_account})"
-        sheet.merge_cells('A1:F2')
+        sheet.merge_cells("A1:F2")
         title_cell = sheet.cell(row=1, column=1)
         title_cell.value = title
         title_cell.fill = title_fill

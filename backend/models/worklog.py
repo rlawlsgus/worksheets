@@ -10,6 +10,7 @@ class WorkLog(db.Model):
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     work_hours = db.Column(db.Float, nullable=False)
+    checked = db.Column(db.Boolean, default=False)
 
     def to_dict(self):
         return {
@@ -18,5 +19,6 @@ class WorkLog(db.Model):
             "date": self.date.strftime("%Y-%m-%d"),
             "start_time": self.start_time.strftime("%H:%M"),
             "end_time": self.end_time.strftime("%H:%M"),
-            "work_hours": self.work_hours
+            "work_hours": self.work_hours,
+            "checked": self.checked
         }

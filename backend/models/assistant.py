@@ -3,6 +3,7 @@ from database.db import db
 
 
 class Assistant(db.Model):
+    admin = db.Column(db.Boolean, default=False)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     bank_account = db.Column(db.String(100))
@@ -12,6 +13,7 @@ class Assistant(db.Model):
 
     def to_dict(self):
         return {
+            "admin": self.admin,
             "id": self.id,
             "name": self.name,
             "bank_account": self.bank_account,

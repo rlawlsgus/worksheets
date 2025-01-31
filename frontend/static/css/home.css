@@ -269,7 +269,7 @@ body {
 
 .table-header {
   display: grid;
-  grid-template-columns: 1fr 80px 80px 80px;
+  grid-template-columns: 1fr 80px 80px 80px 40px;
   padding: 12px 0;
   border-bottom: 1px solid #e0e0e0;
   color: #828282;
@@ -278,7 +278,7 @@ body {
 
 .table-row {
   display: grid;
-  grid-template-columns: 1fr 80px 80px 80px;
+  grid-template-columns: 1fr 80px 80px 80px 40px;
   padding: 12px 0;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -400,6 +400,30 @@ body {
 }
 
 /* 버튼 그룹 */
+.check-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 16px;
+  gap: 8px;
+
+  position: absolute;
+  width: 129px;
+  height: 40px;
+  left: 306px;
+  top: 924px;
+
+  background: #000000;
+  border-radius: 8px;
+  border: none;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 150%;
+}
+
 .delete-button {
   display: flex;
   flex-direction: row;
@@ -412,7 +436,7 @@ body {
   width: 129px;
   height: 40px;
   right: 699px;
-  top: 936px;
+  top: 924px;
 
   background: #000000;
   border-radius: 8px;
@@ -436,7 +460,7 @@ body {
   width: 129px;
   height: 40px;
   right: 80px;
-  top: 936px;
+  top: 924px;
 
   background: #000000;
   border-radius: 8px;

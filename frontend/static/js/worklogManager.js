@@ -19,6 +19,9 @@ export class WorklogManager {
     document
       .querySelector(".export-button")
       ?.addEventListener("click", () => this.exportWorklogs());
+    document
+      .querySelector(".check-button")
+      ?.addEventListener("click", () => this.checkWorklog());
   }
 
   initializeMonthNavigation() {
@@ -77,14 +80,30 @@ export class WorklogManager {
       const date = new Date(log.date);
       const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      row.innerHTML = `
+      if (this.currentAssistantId === 1) {
+        row.innerHTML = `
           <span>${formattedDate}</span>
           <span>${log.start_time}</span>
           <span>${log.end_time}</span>
           <span>${log.work_hours}</span>
+          <input type="checkbox" ${log.checked ? "checked" : ""} />
         `;
+      } else {
+        row.innerHTML = `
+          <span>${formattedDate}</span>
+          <span>${log.start_time}</span>
+          <span>${log.end_time}</span>
+          <span>${log.work_hours}</span>
+          <input type="checkbox" disabled ${log.checked ? "checked" : ""} />
+        `;
+      }
 
-      // 행 선택 이벤트
+      const checkbox = row.querySelector('input[type="checkbox"]');
+
+      checkbox.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
       row.addEventListener("click", () => {
         row.classList.toggle("selected");
       });
@@ -158,6 +177,33 @@ export class WorklogManager {
         console.error("Failed to delete worklogs:", error);
         alert("근무 기록 삭제에 실패했습니다.");
       }
+    }
+  }
+
+  async checkWorklog() {
+    const rows = document.querySelectorAll('div > input[type="checkbox"]');
+
+    const changedRows = Array.from(rows)
+      .filter((checkbox) => checkbox.checked !== checkbox.defaultChecked)
+      .map((checkbox) => {
+        const row = checkbox.closest("div");
+        return {
+          id: row.dataset.id,
+          checked: checkbox.checked,
+        };
+      });
+
+    if (changedRows.length === 0) {
+      alert("승인할 근무 기록을 선택해주세요.");
+      return;
+    }
+
+    try {
+      await api.worklog.check(changedRows);
+      this.loadWorkLogs();
+    } catch (error) {
+      console.error("Failed to delete worklogs:", error);
+      alert("근무 기록 승인에 실패했습니다.");
     }
   }
 

@@ -46,6 +46,12 @@ export const api = {
       fetch(`${API_BASE_URL}/worklog/${id}`, {
         method: "DELETE",
       }).then((res) => res.json()),
+    check: (data) =>
+      fetch(`${API_BASE_URL}/worklogs/check`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }).then((res) => res.json()),
     exportLogs: (year, month) =>
       fetch(`${API_BASE_URL}/worklogs/export/${year}/${month}`, {
         method: "GET",
