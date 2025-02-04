@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://comet-assistant/api";
+const API_BASE_URL = "https://comet-assistant.site/api";
 
 export const api = {
   assistants: {
