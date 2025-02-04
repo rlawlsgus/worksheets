@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://3.35.4.35:8000/api";
+const API_BASE_URL = "https://comet-assistant/api";
 
 export const api = {
   assistants: {
