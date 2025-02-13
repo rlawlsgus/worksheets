@@ -62,9 +62,9 @@ def delete_worklog(id):
 def check_worklog():
     changed_rows = request.json
     for row in changed_rows:
-        log = WorkLog.query.get(row['id'])
+        log = WorkLog.query.get(row["id"])
         if log:
-            log.checked = row['checked']
+            log.checked = row["checked"]
     db.session.commit()
     return jsonify({"success": True})
 

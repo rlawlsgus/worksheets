@@ -30,13 +30,13 @@ def create_app():
     # 설정
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"mysql+pymysql://{os.getenv("DB_USER")}:{os.getenv("DB_PASSWORD")}@{os.getenv("DB_HOST")}/{os.getenv("DB_NAME")}"
+        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS 전용
-    app.config['SESSION_COOKIE_HTTPONLY'] = True  # JavaScript에서 접근 불가
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF 보호
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
+    app.config["SESSION_COOKIE_SECURE"] = True  # HTTPS 전용
+    app.config["SESSION_COOKIE_HTTPONLY"] = True  # JavaScript에서 접근 불가
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # CSRF 보호
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
     # 데이터베이스 초기화
     db.init_app(app)

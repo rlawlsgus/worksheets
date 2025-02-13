@@ -6,9 +6,9 @@ auth_bp = Blueprint("auth", __name__)
 
 def check_login():
     # API 엔드포인트 체크
-    if request.path.startswith('/api/'):
+    if request.path.startswith("/api/"):
         if "user_id" not in session:
-            return jsonify({'error': 'Unauthorized'}), 401
+            return jsonify({"error": "Unauthorized"}), 401
     # 일반 페이지 체크
     elif "user_id" not in session and request.endpoint != "auth.login":
         return redirect(url_for("auth.login"))
