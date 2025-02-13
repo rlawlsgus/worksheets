@@ -15,6 +15,8 @@ def add_assistant():
         salary=data["salary"],
         subject=data["subject"]
     )
+
+    assistant.set_password(data["password"])
     db.session.add(assistant)
     db.session.commit()
     return jsonify({"success": True, "id": assistant.id})
@@ -28,6 +30,8 @@ def update_assistant(id):
     assistant.bank_account = data.get("bank_account", assistant.bank_account)
     assistant.salary = data.get("salary", assistant.salary)
     assistant.subject = data.get("subject", assistant.subject)
+
+    assistant.set_password(data.get("password", assistant.password_hash))
     db.session.commit()
     return jsonify({"success": True})
 
@@ -39,7 +43,7 @@ def get_assistants():
         "id": assistant.id,
         "name": assistant.name,
         "bank_account": assistant.bank_account,
-        "salary": assistant.salary,
+        # "salary": assistant.salary,
         "subject": assistant.subject
     } for assistant in assistants])
 

@@ -15,6 +15,12 @@ export class AssistantManager {
     document
       .querySelector(".add-assistant-button")
       ?.addEventListener("click", () => this.createAssistant());
+    document
+      .querySelector(".logout-button")
+      ?.addEventListener("click", async () => {
+        const response = await api.auth.logout();
+        window.location.href = response.redirect;
+      });
 
     const subjectButtons = document.querySelectorAll(".subject-button");
 
@@ -152,9 +158,11 @@ export class AssistantManager {
       const bankAccount = prompt("계좌번호를 입력하세요:");
       const salary = prompt("급여를 입력하세요:");
       const subject = prompt("담당 과목을 입력하세요 (화학/생명/지학):");
+      const password = prompt("비밀번호를 입력하세요:");
 
       await api.assistants.create({
         name,
+        password,
         bank_account: bankAccount,
         salary,
         subject,
@@ -217,10 +225,12 @@ export class AssistantManager {
       "담당 과목 (화학/생명/지학):",
       assistantData.subject
     );
+    const password = prompt("비밀번호:");
 
     if (name && bankAccount && salary && subject) {
       await api.assistants.update(this.currentAssistantId, {
         name,
+        password,
         bank_account: bankAccount,
         salary,
         subject,
