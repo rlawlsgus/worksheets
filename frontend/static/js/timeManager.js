@@ -59,7 +59,7 @@ export function initializeTimeBoxes() {
       if (type === "hour") {
         value = (value + (event.deltaY < 0 ? 1 : -1) + 24) % 24;
       } else if (type === "minute") {
-        value = (value + (event.deltaY < 0 ? 30 : -30) + 60) % 60;
+        value = (value + 30) % 60;
       }
 
       box.textContent = String(value).padStart(2, "0");
