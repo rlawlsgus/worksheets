@@ -10,7 +10,7 @@ body {
 
 .home {
   position: relative;
-  width: 1440px;
+  /* width: 1440px; */
   height: 1024px;
   background: #ffffff;
 }
@@ -140,9 +140,9 @@ body {
 /* 구분선 */
 .divider {
   position: absolute;
-  width: 1184px;
   height: 0;
   left: 256px;
+  right: 0;
   top: 117px;
   border: 1px solid #e0e0e0;
 }
@@ -204,7 +204,7 @@ body {
   gap: 8px;
 
   position: absolute;
-  right: 52px;
+  right: 36px;
   top: 178px;
 
   padding: 0 16px;
@@ -435,7 +435,7 @@ body {
   position: absolute;
   width: 129px;
   height: 40px;
-  right: 699px;
+  right: 684px;
   top: 924px;
 
   background: #000000;
@@ -459,7 +459,7 @@ body {
   position: absolute;
   width: 129px;
   height: 40px;
-  right: 80px;
+  right: 64px;
   top: 924px;
 
   background: #000000;

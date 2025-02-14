@@ -9,7 +9,6 @@ from routes.auth_routes import auth_bp, check_login
 # from models.assistant import Assistant
 from datetime import timedelta
 from dotenv import load_dotenv
-import pymysql
 import os
 
 # def admin_required(f):
