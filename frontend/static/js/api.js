@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://comet-assistant.site/api";
+const API_BASE_URL = window.location.origin + "/api";
 
 export const api = {
   auth: {
