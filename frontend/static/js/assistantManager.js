@@ -10,7 +10,6 @@ export class AssistantManager {
 
   init() {
     this.initializeButtons();
-    this.initializeMemberButtons();
     this.initializeEditButton();
     this.loadAssistantList();
   }
@@ -35,16 +34,6 @@ export class AssistantManager {
         if (this.filteredAssistantList.length > 0) {
           this.selectAssistant(this.filteredAssistantList[0].id);
         }
-      });
-    });
-  }
-
-  initializeMemberButtons() {
-    const memberButtons = document.querySelectorAll(".member-button");
-    memberButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        memberButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
       });
     });
   }
@@ -138,6 +127,14 @@ export class AssistantManager {
 
   async selectAssistant(assistantId) {
     try {
+      const memberButtons = document.querySelectorAll(".member-button");
+      memberButtons.forEach((btn) => btn.classList.remove("active"));
+
+      const selectedButton = document.querySelector(
+        `.member-button[data-id="${assistantId}"]`
+      );
+      selectedButton.classList.add("active");
+
       this.currentAssistantId = assistantId;
       const assistantData = await api.assistants.get(assistantId);
 
