@@ -19,6 +19,14 @@ export const api = {
         if (!res.ok) throw new Error("Failed to logout");
         return res.json();
       }),
+    getIsAdmin: () =>
+      fetch(`${API_BASE_URL}/is_admin`, {
+        method: "GET",
+        credentials: "include",
+      }).then((res) => {
+        if (!res.ok) throw new Error("Failed to get user info");
+        return res.json();
+      }),
   },
   assistants: {
     getAll: () =>

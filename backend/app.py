@@ -6,19 +6,9 @@ from routes.assistant_routes import assistant_bp
 from routes.worklog_routes import worklog_bp
 from routes.main_routes import main_bp
 from routes.auth_routes import auth_bp, check_login
-# from models.assistant import Assistant
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
-
-# def admin_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         user = Assistant.query.get(session.get("user_id"))
-#         if not user or not user.is_admin:
-#             return jsonify({"error": "Admin privileges required"}), 403
-#         return f(*args, **kwargs)
-#     return decorated_function
 
 def create_app():
     app = Flask(__name__,

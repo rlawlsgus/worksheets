@@ -6,7 +6,11 @@ export class AssistantManager {
     this.currentSubject = "화학";
     this.assistantList = [];
     this.filteredAssistantList = [];
+  }
+
+  init() {
     this.initializeButtons();
+    this.initializeMemberButtons();
     this.initializeEditButton();
     this.loadAssistantList();
   }
@@ -31,6 +35,16 @@ export class AssistantManager {
         if (this.filteredAssistantList.length > 0) {
           this.selectAssistant(this.filteredAssistantList[0].id);
         }
+      });
+    });
+  }
+
+  initializeMemberButtons() {
+    const memberButtons = document.querySelectorAll(".member-button");
+    memberButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        memberButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
       });
     });
   }
@@ -124,14 +138,6 @@ export class AssistantManager {
 
   async selectAssistant(assistantId) {
     try {
-      const memberButtons = document.querySelectorAll(".member-button");
-      memberButtons.forEach((btn) => btn.classList.remove("active"));
-
-      const selectedButton = document.querySelector(
-        `.member-button[data-id="${assistantId}"]`
-      );
-      selectedButton.classList.add("active");
-
       this.currentAssistantId = assistantId;
       const assistantData = await api.assistants.get(assistantId);
 
@@ -172,37 +178,6 @@ export class AssistantManager {
     }
   }
 
-  initializeMemberButtons() {
-    const memberButtons = document.querySelectorAll(".member-button");
-    memberButtons.forEach((button) => {
-      button.addEventListener("click", async () => {
-        memberButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-
-        this.currentAssistantId = button.dataset.id;
-        await this.updateProfileDetails();
-      });
-    });
-  }
-
-  async updateProfileDetails() {
-    if (!this.currentAssistantId) return;
-
-    const assistantData = await api.assistants.get(this.currentAssistantId);
-
-    document.querySelector(".profile-details h2").textContent =
-      assistantData.name;
-    document.querySelector(".profile-details p").textContent =
-      assistantData.bank_account;
-    document.querySelector(".profile-image").textContent =
-      assistantData.subject;
-
-    // 근무 일지 불러오기 (외부에서 주입받아야 할 콜백)
-    if (this.onAssistantSelect) {
-      this.onAssistantSelect(this.currentAssistantId);
-    }
-  }
-
   initializeEditButton() {
     document
       .querySelector(".edit-button")
@@ -237,9 +212,5 @@ export class AssistantManager {
       });
       location.reload();
     }
-  }
-
-  getCurrentAssistantId() {
-    return this.currentAssistantId;
   }
 }

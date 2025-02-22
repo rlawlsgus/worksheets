@@ -7,6 +7,7 @@ from io import BytesIO
 from datetime import datetime
 from models.worklog import WorkLog
 from models.assistant import Assistant
+from routes.auth_routes import is_admin, get_current_user_id, admin_required
 from utils.time_calculator import calculate_work_hours
 from database.db import db
 
@@ -35,6 +36,9 @@ def add_worklog():
 
 @worklog_bp.route("/api/worklogs/<int:assistant_id>/<int:year>/<int:month>", methods=["GET"])
 def get_monthly_worklogs(assistant_id, year, month):
+    if not is_admin() and assistant_id != get_current_user_id():
+        return jsonify({"message": "Forbidden"}), 403
+    
     worklogs = WorkLog.query.filter(
         WorkLog.assistant_id == assistant_id,
         db.extract("year", WorkLog.date) == year,
@@ -59,6 +63,7 @@ def delete_worklog(id):
     return jsonify({"success": True})
 
 @worklog_bp.route("/api/worklogs/check", methods=["PUT"])
+@admin_required
 def check_worklog():
     changed_rows = request.json
     for row in changed_rows:
@@ -70,8 +75,9 @@ def check_worklog():
 
 
 @worklog_bp.route("/api/worklogs/export/<int:year>/<int:month>", methods=["GET"])
+@admin_required
 def export_worklog(year, month):
-    assistants = Assistant.query.all()
+    assistants = Assistant.query.filter_by(is_admin=False).all()
 
     wb = Workbook()
 

@@ -2,9 +2,12 @@ import { api } from "./api.js";
 
 export class WorklogManager {
   constructor() {
-    this.currentAssistantId = 1;
+    this.currentAssistantId = null;
     this.currentDate = new Date();
     this.currentDate.setDate(1);
+  }
+
+  init() {
     this.initializeButtons();
     this.initializeMonthNavigation();
   }
@@ -80,23 +83,13 @@ export class WorklogManager {
       const date = new Date(log.date);
       const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      if (this.currentAssistantId === 1) {
-        row.innerHTML = `
-          <span>${formattedDate}</span>
-          <span>${log.start_time}</span>
-          <span>${log.end_time}</span>
-          <span>${log.work_hours}</span>
-          <input type="checkbox" ${log.checked ? "checked" : ""} />
-        `;
-      } else {
-        row.innerHTML = `
-          <span>${formattedDate}</span>
-          <span>${log.start_time}</span>
-          <span>${log.end_time}</span>
-          <span>${log.work_hours}</span>
-          <input type="checkbox" disabled ${log.checked ? "checked" : ""} />
-        `;
-      }
+      row.innerHTML = `
+        <span>${formattedDate}</span>
+        <span>${log.start_time}</span>
+        <span>${log.end_time}</span>
+        <span>${log.work_hours}</span>
+        <input type="checkbox" ${log.checked ? "checked" : ""} />
+      `;
 
       const checkbox = row.querySelector('input[type="checkbox"]');
 
