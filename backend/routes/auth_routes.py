@@ -52,14 +52,13 @@ def login():
 
         user = Assistant.query.filter_by(name=username).first()
         if user and user.check_password(password):
-            print("User logged in:", user)
             session.permanent = True
             session["user_id"] = user.id
             session["is_admin"] = bool(user.is_admin)
             session.modified = True
             return jsonify({"success": True, "redirect": url_for("main.home")})
 
-        return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        return jsonify({"success": False, "error": "Invalid credentials"})
 
     return render_template("login.html")
 

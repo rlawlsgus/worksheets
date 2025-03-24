@@ -8,7 +8,6 @@ export class AdminManager {
   async init() {
     await this.checkAdmin();
     this.initializeAdminButtons();
-    this.initializeAdminChcekboxes();
   }
 
   async checkAdmin() {
@@ -34,7 +33,6 @@ export class AdminManager {
       document
         .querySelectorAll('input[type="checkbox"]')
         ?.forEach((checkbox) => {
-          console.log(checkbox);
           checkbox.disabled = true;
         });
     }

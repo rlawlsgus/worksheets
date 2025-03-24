@@ -75,17 +75,6 @@ export class WorklogManager {
     const existingRows = tableBody.querySelectorAll(".table-row");
     existingRows.forEach((row) => row.remove());
 
-    let isAdmin = false;
-
-    try {
-      const response = await api.auth.getIsAdmin();
-      isAdmin = response.is_admin;
-    } catch (error) {
-      console.error("Failed to get user info:", error);
-      alert("사용자 정보를 받아오는 데 실패했습니다.");
-      return;
-    }
-
     logs.forEach((log) => {
       const row = document.createElement("div");
       row.className = "table-row";
@@ -99,9 +88,7 @@ export class WorklogManager {
         <span>${log.start_time}</span>
         <span>${log.end_time}</span>
         <span>${log.work_hours}</span>
-        <input type="checkbox" ${log.checked ? "checked" : ""} ${
-        isAdmin ? "" : "disabled"
-      }/>
+        <input type="checkbox" ${log.checked ? "checked" : ""}/>
       `;
 
       const checkbox = row.querySelector('input[type="checkbox"]');
