@@ -10,11 +10,14 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
+
 def create_app():
-    app = Flask(__name__,
-                static_folder="../frontend/static",
-                template_folder="../frontend/templates")
-    
+    app = Flask(
+        __name__,
+        static_folder="../frontend/static",
+        template_folder="../frontend/templates",
+    )
+
     load_dotenv()
 
     # 설정
@@ -47,6 +50,7 @@ def create_app():
 
     CORS(app, supports_credentials=True)
     return app
+
 
 app = create_app()
 

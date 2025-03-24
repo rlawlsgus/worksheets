@@ -14,6 +14,12 @@ export function initializeTimeBoxes() {
       ? (currentHour + 1) % 24
       : currentHour;
 
+  // 시작 날짜 변경 시 종료 날짜도 변경
+  document.getElementById("start-date").addEventListener("change", function () {
+    const startDate = this.value;
+    document.getElementById("end-date").value = startDate;
+  });
+
   // 날짜 계산 함수
   const getFormattedDate = (date) => {
     const year = date.getFullYear();

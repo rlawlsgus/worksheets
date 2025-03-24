@@ -4,8 +4,7 @@ from database.db import db
 
 class WorkLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    assistant_id = db.Column(db.Integer, db.ForeignKey(
-        "assistant.id"), nullable=False)
+    assistant_id = db.Column(db.Integer, db.ForeignKey("assistant.id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
@@ -20,5 +19,5 @@ class WorkLog(db.Model):
             "start_time": self.start_time.strftime("%H:%M"),
             "end_time": self.end_time.strftime("%H:%M"),
             "work_hours": self.work_hours,
-            "checked": self.checked
+            "checked": self.checked,
         }

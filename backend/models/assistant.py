@@ -27,5 +27,5 @@ class Assistant(db.Model):
             "password_hash": self.password_hash,
             "bank_account": self.bank_account,
             "salary": self.salary,
-            "subject": self.subject
+            "subject": self.subject,
         }

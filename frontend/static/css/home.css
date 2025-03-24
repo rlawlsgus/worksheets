@@ -124,7 +124,7 @@ body {
   color: #333333;
 }
 
-/* 애니메이션 인디케이터터 */
+/* 애니메이션 인디케이터 */
 .active-indicator {
   position: absolute;
   top: 4px;
@@ -224,7 +224,8 @@ body {
 .attendance-log {
   box-sizing: border-box;
   position: absolute;
-  height: 599px;
+  min-height: 599px;
+  max-height: 80vh;
   left: 278px;
   width: 491px;
   top: 286px;
@@ -233,6 +234,9 @@ body {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.04);
   border-radius: 8px;
   padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .log-header {
@@ -285,6 +289,27 @@ body {
 
 .table-row.selected {
   background-color: #f7f7f7;
+}
+
+/* 총 근무 시간 요약 */
+.total-work-time {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+}
+
+.total-work-time-label {
+  font-size: 14px;
+}
+
+.total-work-time-value {
+  font-size: 16px;
+  color: #000;
 }
 
 /* 시작 시간 */

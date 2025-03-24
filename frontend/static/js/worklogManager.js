@@ -69,11 +69,22 @@ export class WorklogManager {
     }
   }
 
-  renderWorkLogs(logs) {
+  async renderWorkLogs(logs) {
     const tableBody = document.querySelector(".attendance-table");
 
     const existingRows = tableBody.querySelectorAll(".table-row");
     existingRows.forEach((row) => row.remove());
+
+    let isAdmin = false;
+
+    try {
+      const response = await api.auth.getIsAdmin();
+      isAdmin = response.is_admin;
+    } catch (error) {
+      console.error("Failed to get user info:", error);
+      alert("사용자 정보를 받아오는 데 실패했습니다.");
+      return;
+    }
 
     logs.forEach((log) => {
       const row = document.createElement("div");
@@ -88,7 +99,9 @@ export class WorklogManager {
         <span>${log.start_time}</span>
         <span>${log.end_time}</span>
         <span>${log.work_hours}</span>
-        <input type="checkbox" ${log.checked ? "checked" : ""} />
+        <input type="checkbox" ${log.checked ? "checked" : ""} ${
+        isAdmin ? "" : "disabled"
+      }/>
       `;
 
       const checkbox = row.querySelector('input[type="checkbox"]');
@@ -103,6 +116,10 @@ export class WorklogManager {
 
       tableBody.appendChild(row);
     });
+
+    const totalHoursDiv = document.querySelector(".total-work-time-value");
+    const totalHours = logs.reduce((acc, log) => acc + log.work_hours, 0);
+    totalHoursDiv.textContent = convertToTime(totalHours);
   }
 
   async createWorklog() {
@@ -144,7 +161,10 @@ export class WorklogManager {
       };
 
       try {
-        await api.worklog.create(worklog);
+        const response = await api.worklog.create(worklog);
+        if (response.success !== true) {
+          throw new Error("API response indicates failure");
+        }
         this.loadWorkLogs();
       } catch (error) {
         console.error("Failed to create worklog:", error);
@@ -222,4 +242,10 @@ export class WorklogManager {
       alert("근무 기록을 내보내는 데 실패했습니다.");
     }
   }
+}
+
+function convertToTime(value) {
+  const hours = Math.floor(value);
+  const minutes = Math.round((value - hours) * 60);
+  return minutes === 0 ? `${hours}시간` : `${hours}시간 ${minutes}분`;
 }

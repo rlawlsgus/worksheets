@@ -15,7 +15,7 @@ def add_assistant():
         name=data["name"],
         bank_account=data["bank_account"],
         salary=data["salary"],
-        subject=data["subject"]
+        subject=data["subject"],
     )
 
     assistant.set_password(data["password"])
@@ -46,24 +46,27 @@ def get_assistants():
         assistants = Assistant.query.all()
     else:
         assistants = Assistant.query.filter_by(id=get_current_user_id()).all()
-    return jsonify([{
-        "id": assistant.id,
-        "name": assistant.name,
-        "subject": assistant.subject
-    } for assistant in assistants])
+    return jsonify(
+        [
+            {"id": assistant.id, "name": assistant.name, "subject": assistant.subject}
+            for assistant in assistants
+        ]
+    )
 
 
 @assistant_bp.route("/api/assistant/<int:id>", methods=["GET"])
 def get_assistant(id):
     if not is_admin() and id != get_current_user_id():
         return jsonify({"message": "Forbidden"}), 403
-    
+
     assistant = Assistant.query.get_or_404(id)
-    
-    return jsonify({
-        "id": assistant.id,
-        "name": assistant.name,
-        "bank_account": assistant.bank_account,
-        "salary": assistant.salary,
-        "subject": assistant.subject
-    })
+
+    return jsonify(
+        {
+            "id": assistant.id,
+            "name": assistant.name,
+            "bank_account": assistant.bank_account,
+            "salary": assistant.salary,
+            "subject": assistant.subject,
+        }
+    )
