@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   assistantManager.onAssistantSelect = async (assistantId) => {
     worklogManager.currentAssistantId = assistantId;
     await worklogManager.loadWorkLogs();
-    await adminManager.initializeAdminChcekboxes();
+    await adminManager.initializeAdminCheckboxes();
   };
 
   // 과목 전환 애니메이션

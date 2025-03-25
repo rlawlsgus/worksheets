@@ -28,7 +28,7 @@ export class AdminManager {
     }
   }
 
-  initializeAdminChcekboxes() {
+  initializeAdminCheckboxes() {
     if (!this.isAdmin) {
       document
         .querySelectorAll('input[type="checkbox"]')
