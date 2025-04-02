@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side
 from sqlalchemy import extract
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, date
 from models.worklog import WorkLog
 from models.assistant import Assistant
 from routes.auth_routes import is_admin, get_current_user_id, admin_required
@@ -97,6 +97,34 @@ def check_worklog():
     return jsonify({"success": True})
 
 
+@worklog_bp.route("/api/worklogs/unchecked/<int:year>/<int:month>", methods=["GET"])
+@admin_required
+def get_unchecked_logs(year, month):
+    # 해당 연도와 월에 대한 승인되지 않은 worklog 조회
+    start_date = date(year, month, 1)
+    if month == 12:
+        end_date = date(year + 1, 1, 1)
+    else:
+        end_date = date(year, month + 1, 1)
+
+    # 해당 월의 미승인 로그를 조회하고 assistant 이름도 함께 가져옴
+    unchecked_logs = (
+        db.session.query(WorkLog, Assistant.name.label("assistant_name"))
+        .join(Assistant, WorkLog.assistant_id == Assistant.id)
+        .filter(WorkLog.date >= start_date)
+        .filter(WorkLog.date < end_date)
+        .filter(WorkLog.checked == False)
+        .all()
+    )
+
+    result = [
+        {**log.to_dict(), "assistant_name": assistant_name}
+        for log, assistant_name in unchecked_logs
+    ]
+
+    return jsonify(result)
+
+
 @worklog_bp.route("/api/worklogs/export/<int:year>/<int:month>", methods=["GET"])
 @admin_required
 def export_worklog(year, month):
@@ -167,6 +195,7 @@ def export_worklog(year, month):
                 extract("year", WorkLog.date) == year,
                 extract("month", WorkLog.date) == month,
             )
+            .filter(WorkLog.checked == True)
             .order_by(WorkLog.date)
             .all()
         )

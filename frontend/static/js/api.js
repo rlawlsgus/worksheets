@@ -97,6 +97,12 @@ export const api = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => res.json()),
+    getUncheckedLogs: (year, month) =>
+      fetch(`${API_BASE_URL}/worklogs/unchecked/${year}/${month}`, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => res.json()),
     exportLogs: (year, month) =>
       fetch(`${API_BASE_URL}/worklogs/export/${year}/${month}`, {
         method: "GET",

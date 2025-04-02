@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { CustomModal } from "./modal.js";
 
 export class WorklogManager {
   constructor() {
@@ -201,6 +202,7 @@ export class WorklogManager {
     try {
       await api.worklog.check(changedRows);
       this.loadWorkLogs();
+      alert("근무 기록이 승인되었습니다.");
     } catch (error) {
       console.error("Failed to delete worklogs:", error);
       alert("근무 기록 승인에 실패했습니다.");
@@ -212,22 +214,56 @@ export class WorklogManager {
     const month = this.currentDate.getMonth() + 1;
 
     try {
-      const blob = await api.worklog.exportLogs(year, month);
-      const url = window.URL.createObjectURL(blob);
+      // 승인되지 않은 worklog 확인
+      const uncheckedLogs = await api.worklog.getUncheckedLogs(year, month);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `worklog_${year}_${month}.xlsx`;
+      if (uncheckedLogs.length > 0) {
+        // 승인되지 않은 로그가 있는 경우
+        const names = uncheckedLogs
+          .map((log) => log.assistant_name)
+          .filter((name, index, self) => self.indexOf(name) === index);
 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        const nameList = names.join(", ");
 
-      window.URL.revokeObjectURL(url);
+        // 커스텀 경고 모달 표시
+        const confirmed = await CustomModal.warning(
+          `승인되지 않은 worklog가 ${nameList}에 있습니다.`,
+          {
+            buttons: [
+              { text: "취소", value: false },
+              { text: "내보내기", value: true, primary: true },
+            ],
+          }
+        );
+
+        if (!confirmed) {
+          return; // 사용자가 취소를 선택한 경우
+        }
+      }
+
+      // 내보내기 진행
+      await this.proceedWithExport(year, month);
     } catch (error) {
       console.error("Failed to export worklogs:", error);
-      alert("근무 기록을 내보내는 데 실패했습니다.");
+
+      // 오류 발생 시 알림 모달 표시
+      await CustomModal.alert("근무 기록을 내보내는 데 실패했습니다.");
     }
+  }
+
+  async proceedWithExport(year, month) {
+    const blob = await api.worklog.exportLogs(year, month);
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `worklog_${year}_${month}.xlsx`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
   }
 }
 
