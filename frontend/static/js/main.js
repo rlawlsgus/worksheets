@@ -6,18 +6,16 @@ import { initializeTimeBoxes } from "./timeManager.js";
 document.addEventListener("DOMContentLoaded", async () => {
   initializeTimeBoxes();
 
-  const assistantManager = new AssistantManager();
-  const worklogManager = new WorklogManager();
-
-  await Promise.all([assistantManager.init(), worklogManager.init()]);
-
   const adminManager = new AdminManager();
+  const assistantManager = new AssistantManager(adminManager);
+  const worklogManager = new WorklogManager(adminManager);
+
   await adminManager.init();
+  await Promise.all([assistantManager.init(), worklogManager.init()]);
 
   assistantManager.onAssistantSelect = async (assistantId) => {
     worklogManager.currentAssistantId = assistantId;
-    await worklogManager.loadWorkLogs();
-    adminManager.initializeAdminCheckboxes();
+    worklogManager.loadWorkLogs();
   };
 
   // 과목 전환 애니메이션

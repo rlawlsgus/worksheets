@@ -2,7 +2,8 @@ import { api } from "./api.js";
 import { CustomModal } from "./modal.js";
 
 export class WorklogManager {
-  constructor() {
+  constructor(adminManager) {
+    this.adminManager = adminManager;
     this.currentAssistantId = null;
     this.currentDate = new Date();
     this.currentDate.setDate(1);
@@ -84,13 +85,23 @@ export class WorklogManager {
       const date = new Date(log.date);
       const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      row.innerHTML = `
+      if (this.adminManager.isAdmin) {
+        row.innerHTML = `
         <span>${formattedDate}</span>
         <span>${log.start_time}</span>
         <span>${log.end_time}</span>
         <span>${log.work_hours}</span>
         <input type="checkbox" ${log.checked ? "checked" : ""}/>
       `;
+      } else {
+        row.innerHTML = `
+        <span>${formattedDate}</span>
+        <span>${log.start_time}</span>
+        <span>${log.end_time}</span>
+        <span>${log.work_hours}</span>
+        <input type="checkbox" ${log.checked ? "checked" : ""} disabled/>
+      `;
+      }
 
       const checkbox = row.querySelector('input[type="checkbox"]');
 
@@ -155,7 +166,6 @@ export class WorklogManager {
         }
         this.loadWorkLogs();
       } catch (error) {
-        console.error("Failed to create worklog:", error);
         alert("근무 기록 추가에 실패했습니다.");
       }
     }
@@ -195,8 +205,16 @@ export class WorklogManager {
       });
 
     if (changedRows.length === 0) {
-      alert("승인할 근무 기록을 선택해주세요.");
+      const alert = await CustomModal.alert("승인할 근무 기록을 선택해주세요.");
       return;
+    } else {
+      const confirmed = await CustomModal.confirm(
+        "선택한 근무 기록을 승인하시겠습니까?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
     }
 
     try {
@@ -214,20 +232,17 @@ export class WorklogManager {
     const month = this.currentDate.getMonth() + 1;
 
     try {
-      // 승인되지 않은 worklog 확인
       const uncheckedLogs = await api.worklog.getUncheckedLogs(year, month);
 
       if (uncheckedLogs.length > 0) {
-        // 승인되지 않은 로그가 있는 경우
         const names = uncheckedLogs
           .map((log) => log.assistant_name)
           .filter((name, index, self) => self.indexOf(name) === index);
 
         const nameList = names.join(", ");
 
-        // 커스텀 경고 모달 표시
         const confirmed = await CustomModal.warning(
-          `승인되지 않은 worklog가 ${nameList}에 있습니다.`,
+          `승인되지 않은 근무기록이 ${nameList}에 있습니다.`,
           {
             buttons: [
               { text: "취소", value: false },
@@ -237,16 +252,14 @@ export class WorklogManager {
         );
 
         if (!confirmed) {
-          return; // 사용자가 취소를 선택한 경우
+          return;
         }
       }
 
-      // 내보내기 진행
       await this.proceedWithExport(year, month);
     } catch (error) {
       console.error("Failed to export worklogs:", error);
 
-      // 오류 발생 시 알림 모달 표시
       await CustomModal.alert("근무 기록을 내보내는 데 실패했습니다.");
     }
   }

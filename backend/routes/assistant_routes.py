@@ -34,8 +34,9 @@ def update_assistant(id):
         assistant.bank_account = data.get("bank_account", assistant.bank_account)
         assistant.salary = data.get("salary", assistant.salary)
         assistant.subject = data.get("subject", assistant.subject)
+    if "password" in data:
+        assistant.set_password(data.get("password", assistant.password_hash))
 
-    assistant.set_password(data.get("password", assistant.password_hash))
     db.session.commit()
     return jsonify({"success": True})
 

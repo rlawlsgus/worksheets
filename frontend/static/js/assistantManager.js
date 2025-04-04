@@ -1,7 +1,8 @@
 import { api } from "./api.js";
 
 export class AssistantManager {
-  constructor() {
+  constructor(adminManager) {
+    this.adminManager = adminManager;
     this.currentAssistantId = null;
     this.currentSubject = "화학";
     this.assistantList = [];
@@ -190,24 +191,44 @@ export class AssistantManager {
 
   async updateAssistant() {
     const assistantData = await api.assistants.get(this.currentAssistantId);
-    const name = prompt("조교 이름:", assistantData.name);
-    const bankAccount = prompt("계좌번호:", assistantData.bank_account);
-    const salary = prompt("급여:", assistantData.salary);
-    const subject = prompt(
-      "담당 과목 (화학/생명/지학):",
-      assistantData.subject
-    );
-    const password = prompt("비밀번호:");
 
-    if (name && bankAccount && salary && subject) {
-      await api.assistants.update(this.currentAssistantId, {
-        name,
-        password,
-        bank_account: bankAccount,
-        salary,
-        subject,
-      });
-      location.reload();
+    if (this.adminManager.isAdmin) {
+      const updatePassword = confirm("비밀번호를 변경하시겠습니까?");
+
+      const updateData = {};
+
+      if (updatePassword) {
+        const password = prompt("새 비밀번호:");
+        if (password) {
+          updateData.password = password;
+        }
+      }
+
+      const name = prompt("조교 이름:", assistantData.name);
+      const bankAccount = prompt("계좌번호:", assistantData.bank_account);
+      const salary = prompt("급여:", assistantData.salary);
+      const subject = prompt(
+        "담당 과목 (화학/생명/지학):",
+        assistantData.subject
+      );
+
+      if (name) updateData.name = name;
+      if (bankAccount) updateData.bank_account = bankAccount;
+      if (salary) updateData.salary = salary;
+      if (subject) updateData.subject = subject;
+
+      if (Object.keys(updateData).length > 0) {
+        await api.assistants.update(this.currentAssistantId, updateData);
+        location.reload();
+      }
+    } else {
+      const password = prompt("새 비밀번호:");
+      if (password) {
+        await api.assistants.update(this.currentAssistantId, {
+          password,
+        });
+        location.reload();
+      }
     }
   }
 }

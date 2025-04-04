@@ -27,14 +27,4 @@ export class AdminManager {
       });
     }
   }
-
-  initializeAdminCheckboxes() {
-    if (!this.isAdmin) {
-      document
-        .querySelectorAll('input[type="checkbox"]')
-        ?.forEach((checkbox) => {
-          checkbox.disabled = true;
-        });
-    }
-  }
 }
