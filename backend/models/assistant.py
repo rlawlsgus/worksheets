@@ -12,6 +12,7 @@ class Assistant(db.Model):
     salary = db.Column(db.Integer)
     subject = db.Column(db.String(50))
     work_logs = db.relationship("WorkLog", backref="assistant", lazy=True)
+    images = db.relationship("Image", backref="assistant", lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

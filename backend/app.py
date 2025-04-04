@@ -4,6 +4,7 @@ from flask_cors import CORS
 from database.db import db
 from routes.assistant_routes import assistant_bp
 from routes.worklog_routes import worklog_bp
+from routes.image_routes import image_bp
 from routes.main_routes import main_bp
 from routes.auth_routes import auth_bp, check_login
 from datetime import timedelta
@@ -22,9 +23,14 @@ def create_app():
 
     # 설정
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
-    )
+
+    if os.getenv("FLASK_ENV") == "development":
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("TEST_DB")
+    elif os.getenv("FLASK_ENV") == "production":
+        app.config["SQLALCHEMY_DATABASE_URI"] = (
+            f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+        )
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SESSION_COOKIE_SECURE"] = True  # HTTPS 전용
     app.config["SESSION_COOKIE_HTTPONLY"] = True  # JavaScript에서 접근 불가
@@ -43,6 +49,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(assistant_bp)
     app.register_blueprint(worklog_bp)
+    app.register_blueprint(image_bp)
 
     # 데이터베이스 생성
     with app.app_context():
@@ -55,4 +62,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

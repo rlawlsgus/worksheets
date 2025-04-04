@@ -26,6 +26,9 @@ def add_assistant():
 
 @assistant_bp.route("/api/assistant/<int:id>", methods=["PUT"])
 def update_assistant(id):
+    if not is_admin() and id != get_current_user_id():
+        return jsonify({"message": "Forbidden"}), 403
+
     assistant = Assistant.query.get_or_404(id)
     data = request.json
 
