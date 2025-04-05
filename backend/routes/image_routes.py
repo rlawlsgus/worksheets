@@ -19,7 +19,6 @@ S3_BUCKET = os.getenv("S3_BUCKET_NAME")
 S3_REGION = os.getenv("AWS_REGION", "ap-northeast-2")
 
 if os.getenv("FLASK_ENV") == "development":
-    S3_ENDPOINT_URL = os.getenv("S3_ENDPOINT_URL")
     s3_client = boto3.client(
         "s3",
         region_name=S3_REGION,
@@ -28,6 +27,13 @@ if os.getenv("FLASK_ENV") == "development":
     )
 elif os.getenv("FLASK_ENV") == "production":
     s3_client = boto3.client("s3", region_name=S3_REGION)
+
+# S3 연결 테스트
+try:
+    s3_client.list_buckets()
+    print("S3 connection successful")
+except Exception as e:
+    print(f"Error connecting to S3: {str(e)}")
 
 # 허용되는 파일 확장자
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
@@ -70,7 +76,12 @@ def get_images_by_assistant(assistant_id):
                 image_data["signed_url"] = signed_url
             result.append(image_data)
 
-        return render_template("images.html", name=assistant.name, images=result)
+        return render_template(
+            "images.html",
+            name=assistant.name,
+            images=result,
+            today_date=datetime.today().strftime("%Y-%m-%d"),
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -78,9 +89,12 @@ def get_images_by_assistant(assistant_id):
 @image_bp.route("/api/image_upload", methods=["POST"])
 def upload_image():
     try:
-        data = request.json
+        # Content-Type이 multipart/form-data인지 확인
+        if not request.content_type.startswith("multipart/form-data"):
+            return jsonify({"error": "Content-Type must be multipart/form-data"}), 415
+
         assistant_id = get_current_user_id()
-        image_date = datetime.strptime(data["image_date"], "%Y-%m-%d").date()
+        image_date = request.form.get("image_date")
 
         # 사용자 권한 확인
         if not assistant_id:
@@ -105,8 +119,12 @@ def upload_image():
             return jsonify({"error": "File type not allowed"}), 400
 
         # 파일 크기 확인
-        if file.content_length > 2 * 1024 * 1024:
+        file_data = file.read()
+        if len(file_data) > 2 * 1024 * 1024:  # 2MB
             return jsonify({"error": "File size exceeds limit"}), 400
+
+        # 파일 포인터를 다시 시작 위치로 되돌림
+        file.seek(0)
 
         # 안전한 파일명으로 변환
         filename = secure_filename(file.filename)
@@ -114,6 +132,9 @@ def upload_image():
         unique_filename = (
             f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
         )
+
+        print(file.filename, file.content_type, file.content_length)
+        print(s3_client)
 
         # S3에 파일 업로드
         s3_client.upload_fileobj(
@@ -123,6 +144,8 @@ def upload_image():
             ExtraArgs={"ContentType": file.content_type},
         )
 
+        print("here")
+
         # S3 URL 생성
         image_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/taxi_images/{unique_filename}"
 
@@ -131,7 +154,7 @@ def upload_image():
             assistant_id=assistant_id,
             url=image_url,
             filename=unique_filename,
-            date=image_date,
+            date=datetime.strptime(image_date, "%Y-%m-%d").date(),
         )
         db.session.add(new_image)
         db.session.commit()

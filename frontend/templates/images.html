@@ -4,12 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>혜성과학 조교 관리</title>
-    <link rel="stylesheet" href="../static/css/images.css" />
+    <link rel="stylesheet" href="../../static/css/images.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script type="module" src="../static/js/images.js"></script>
   </head>
   <body>
     <header>
@@ -17,20 +16,59 @@
     </header>
     <main>
       <div id="image-container">
-        {% if images %} {% for image in images %}
-        <div class="image-card">
-          <img
-            src="{{ image.signed_url or image.url }}"
-            alt="{{ image.filename }}"
-          />
-          <div class="image-info">
-            <p><strong>날짜:</strong> {{ image.date }}</p>
+        <form
+          id="bulk-delete-form"
+          action="/api/image_delete"
+          method="post"
+          enctype="application/x-www-form-urlencoded"
+        >
+          {% if images %} {% for image in images %}
+          <div class="image-card">
+            <input
+              type="checkbox"
+              name="image_ids"
+              value="{{ image.id }}"
+              class="image-checkbox"
+            />
+            <img
+              src="{{ image.signed_url or image.url }}"
+              alt="{{ image.filename }}"
+            />
+            <div class="image-info">
+              <p><strong>날짜:</strong> {{ image.date }}</p>
+            </div>
           </div>
-        </div>
-        {% endfor %} {% else %}
-        <p>등록된 이미지가 없습니다.</p>
-        {% endif %}
+          {% endfor %}
+          <button type="submit">선택된 이미지 삭제</button>
+          {% else %}
+          <p>등록된 이미지가 없습니다.</p>
+          {% endif %}
+        </form>
       </div>
+      <form
+        id="upload-form"
+        action="/api/image_upload"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <label for="upload-date">날짜:</label>
+        <input
+          type="date"
+          id="upload-date"
+          name="image_date"
+          value="{{ today_date }}"
+          required
+        />
+        <label for="upload-image">이미지:</label>
+        <input
+          type="file"
+          id="upload-image"
+          name="file"
+          accept="image/*"
+          required
+        />
+        <button type="submit">업로드</button>
+      </form>
     </main>
   </body>
 </html>
