@@ -9,48 +9,50 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <script src="../../static/js/images.js" defer></script>
   </head>
   <body>
     <header>
       <h1>{{ name }} 택시비 이미지</h1>
     </header>
     <main>
+      <!-- 월 선택 네비게이션 추가 -->
+      <div class="month-navigation">
+        <button id="prev-month" class="month-nav-button">&lt; 이전 월</button>
+        <h2 id="current-month-display">2025년 4월</h2>
+        <button id="next-month" class="month-nav-button">다음 월 &gt;</button>
+      </div>
+
       <div id="image-container">
-        <form
-          id="bulk-delete-form"
-          action="/api/image_delete"
-          method="post"
-          enctype="application/x-www-form-urlencoded"
-        >
-          {% if images %} {% for image in images %}
-          <div class="image-card">
-            <input
-              type="checkbox"
-              name="image_ids"
-              value="{{ image.id }}"
-              class="image-checkbox"
-            />
-            <img
-              src="{{ image.signed_url or image.url }}"
-              alt="{{ image.filename }}"
-            />
-            <div class="image-info">
-              <p><strong>날짜:</strong> {{ image.date }}</p>
+        <form id="bulk-delete-form">
+          <div id="images-by-month">
+            {% if images %}
+            <!-- 이미지는 JavaScript에서 월별로 필터링되어 표시됩니다 -->
+            {% for image in images %}
+            <div class="image-card" data-date="{{ image.date }}">
+              <input
+                type="checkbox"
+                name="image_ids"
+                value="{{ image.id }}"
+                class="image-checkbox"
+              />
+              <img
+                src="{{ image.signed_url or image.url }}"
+                alt="{{ image.filename }}"
+              />
+              <div class="image-info">
+                <p><strong>날짜:</strong> {{ image.date }}</p>
+              </div>
             </div>
+            {% endfor %} {% else %}
+            <p id="no-images-message">등록된 이미지가 없습니다.</p>
+            {% endif %}
           </div>
-          {% endfor %}
-          <button type="submit">선택된 이미지 삭제</button>
-          {% else %}
-          <p>등록된 이미지가 없습니다.</p>
-          {% endif %}
+          <button type="submit" id="delete-button">선택된 이미지 삭제</button>
         </form>
       </div>
-      <form
-        id="upload-form"
-        action="/api/image_upload"
-        method="post"
-        enctype="multipart/form-data"
-      >
+
+      <form id="upload-form">
         <label for="upload-date">날짜:</label>
         <input
           type="date"
@@ -70,5 +72,13 @@
         <button type="submit">업로드</button>
       </form>
     </main>
+
+    <!-- 현재 페이지의 assistant_id를 JavaScript에서 사용할 수 있도록 숨겨진 입력 필드 추가 -->
+    <input type="hidden" id="assistant-id" value="{{ assistant_id }}" />
+    <!-- 서버에서 전달된 이미지 데이터를 JavaScript에서 사용할 수 있도록 추가 -->
+    <script>
+      // 템플릿에서 이미지 데이터를 JSON으로 변환하여 전달
+      const allImages = JSON.parse("{{ images|tojson }}");
+    </script>
   </body>
 </html>

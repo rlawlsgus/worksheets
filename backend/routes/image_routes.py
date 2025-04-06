@@ -28,13 +28,6 @@ if os.getenv("FLASK_ENV") == "development":
 elif os.getenv("FLASK_ENV") == "production":
     s3_client = boto3.client("s3", region_name=S3_REGION)
 
-# S3 연결 테스트
-try:
-    s3_client.list_buckets()
-    print("S3 connection successful")
-except Exception as e:
-    print(f"Error connecting to S3: {str(e)}")
-
 # 허용되는 파일 확장자
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
@@ -79,6 +72,7 @@ def get_images_by_assistant(assistant_id):
         return render_template(
             "images.html",
             name=assistant.name,
+            assistant_id=assistant.id,
             images=result,
             today_date=datetime.today().strftime("%Y-%m-%d"),
         )
@@ -89,11 +83,10 @@ def get_images_by_assistant(assistant_id):
 @image_bp.route("/api/image_upload", methods=["POST"])
 def upload_image():
     try:
-        # Content-Type이 multipart/form-data인지 확인
         if not request.content_type.startswith("multipart/form-data"):
             return jsonify({"error": "Content-Type must be multipart/form-data"}), 415
 
-        assistant_id = get_current_user_id()
+        assistant_id = request.form.get("assistant_id")
         image_date = request.form.get("image_date")
 
         # 사용자 권한 확인
@@ -133,9 +126,6 @@ def upload_image():
             f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
         )
 
-        print(file.filename, file.content_type, file.content_length)
-        print(s3_client)
-
         # S3에 파일 업로드
         s3_client.upload_fileobj(
             file,
@@ -143,8 +133,6 @@ def upload_image():
             f"taxi_images/{unique_filename}",
             ExtraArgs={"ContentType": file.content_type},
         )
-
-        print("here")
 
         # S3 URL 생성
         image_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/taxi_images/{unique_filename}"
@@ -165,21 +153,18 @@ def upload_image():
         return jsonify({"error": str(e)}), 500
 
 
-@image_bp.route("/api/image_delete", methods=["DELETE"])
+@image_bp.route("/api/image_delete", methods=["POST"])
 def delete_images():
     try:
-        data = request.json
-        image_ids = data.get("image_ids", [])
-        assistant_id = get_current_user_id()
+        image_ids = request.form.getlist("image_ids")
+        user_id = get_current_user_id()
 
         if not image_ids:
             return jsonify({"error": "No image IDs provided"}), 400
 
         images = Image.query.filter(Image.id.in_(image_ids)).all()
 
-        if not is_admin() and any(
-            image.assistant_id != assistant_id for image in images
-        ):
+        if not is_admin() and any(image.assistant_id != user_id for image in images):
             return jsonify({"error": "Unauthorized access"}), 403
 
         for image in images:

@@ -1,41 +1,303 @@
-body {
-  font-family: Arial, sans-serif;
+/* 기본 리셋 및 공통 스타일 */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  line-height: 1.6;
+  color: #333;
   background-color: #f9f9f9;
+  padding: 0 16px;
 }
 
 header {
-  background-color: #007bff;
-  color: white;
-  padding: 1rem;
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #222;
+}
+
+/* 월 네비게이션 스타일 - 반응형 */
+.month-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.month-nav-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  flex: 0 0 auto;
+}
+
+.month-nav-button:hover {
+  background-color: #e0e0e0;
+}
+
+.month-nav-button:active {
+  background-color: #d0d0d0;
+}
+
+#current-month-display {
+  margin: 0 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 120px;
   text-align: center;
 }
 
-main {
-  padding: 2rem;
-}
-
+/* 이미지 컨테이너 스타일 - 반응형 그리드 */
 #image-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+#images-by-month {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* 화면 크기에 따른 그리드 조정 */
+@media (min-width: 576px) {
+  #images-by-month {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  #images-by-month {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+#no-images-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* 이미지 카드 스타일 */
 .image-card {
-  background: white;
+  position: relative;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  transition: transform 0.2s;
+  background-color: white;
+}
+
+.image-card:hover {
+  transform: translateY(-4px);
 }
 
 .image-card img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
 }
 
 .image-info {
-  padding: 1rem;
+  padding: 8px;
+  background-color: #f9f9f9;
+  font-size: 0.9rem;
+}
+
+.image-info p {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-checkbox {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+  cursor: pointer;
+  /* 터치 기기에서 사용성 개선 */
+  transform: scale(1.3);
+}
+
+/* 폼 스타일 - 반응형 */
+#bulk-delete-form,
+#upload-form {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 20px;
+}
+
+#upload-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#upload-form label {
+  margin-right: 5px;
+  font-weight: 500;
+}
+
+#upload-form input[type="date"],
+#upload-form input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+/* 모바일에서 업로드 폼 세로 정렬 */
+@media (max-width: 576px) {
+  #upload-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #upload-form label {
+    margin-bottom: 5px;
+  }
+}
+
+/* 버튼 스타일 */
+button[type="submit"],
+#delete-button {
+  background-color: #4a6aff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+button[type="submit"]:hover,
+#delete-button:hover {
+  background-color: #3451cc;
+}
+
+#delete-button {
+  background-color: #ff5252;
+  display: block;
+  margin: 15px auto 0;
+  min-width: 150px;
+}
+
+#delete-button:hover {
+  background-color: #e04040;
+}
+
+/* 접근성 및 포커스 스타일 */
+button:focus,
+input:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* 다크 모드 지원 */
+/* @media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  h1,
+  #current-month-display {
+    color: #ffffff;
+  }
+
+  .month-nav-button {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: #e0e0e0;
+  }
+
+  .month-nav-button:hover {
+    background-color: #3d3d3d;
+  }
+
+  .image-card {
+    background-color: #1e1e1e;
+    border-color: #333;
+  }
+
+  .image-info {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+  }
+
+  #no-images-message {
+    background-color: #2a2a2a;
+    color: #aaa;
+  }
+
+  #upload-form {
+    background-color: #1e1e1e;
+  }
+
+  #upload-form input[type="date"],
+  #upload-form input[type="file"] {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: #e0e0e0;
+  }
+} */
+
+/* 인쇄 스타일 */
+@media print {
+  .month-navigation,
+  #upload-form,
+  #delete-button,
+  .image-checkbox {
+    display: none;
+  }
+
+  body {
+    background-color: white;
+    padding: 0;
+  }
+
+  #images-by-month {
+    gap: 10px;
+  }
+
+  .image-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
 }
