@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateMonthDisplay() {
     document.getElementById(
       "current-month-display"
-    ).textContent = `${currentYear}년 ${currentMonth + 1}월월`;
+    ).textContent = `${currentYear}년 ${currentMonth + 1}월`;
   }
 
   // 이전 월 표시

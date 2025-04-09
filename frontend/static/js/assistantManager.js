@@ -37,6 +37,14 @@ export class AssistantManager {
         }
       });
     });
+
+    document.querySelector(".image-button")?.addEventListener("click", () => {
+      if (!this.currentAssistantId) {
+        alert("조교를 선택해주세요.");
+        return;
+      }
+      window.location.href = `/images/${this.currentAssistantId}`;
+    });
   }
 
   async loadAssistantList() {

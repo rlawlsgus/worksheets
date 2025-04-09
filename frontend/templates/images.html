@@ -14,12 +14,30 @@
   <body>
     <header>
       <h1>{{ name }} 택시비 이미지</h1>
+      <!-- 홈 버튼을 아이콘으로 변경 -->
+      <button id="home-button" onclick="window.location.href='/'">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-arrow-left"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
     </header>
     <main>
       <!-- 월 선택 네비게이션 추가 -->
       <div class="month-navigation">
         <button id="prev-month" class="month-nav-button">&lt; 이전 월</button>
-        <h2 id="current-month-display">2025년 4월</h2>
+        <h2 id="current-month-display">년 월</h2>
         <button id="next-month" class="month-nav-button">다음 월 &gt;</button>
       </div>
 
