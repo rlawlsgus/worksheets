@@ -55,7 +55,7 @@ def get_images_by_assistant(assistant_id):
     try:
         user_id = get_current_user_id()
         assistant = Assistant.query.get(assistant_id)
-        if not is_admin() and (not assistant or assistant.user_id != user_id):
+        if not is_admin() and (not assistant or assistant.id != user_id):
             return jsonify({"error": "Unauthorized access"}), 403
 
         images = Image.query.filter_by(assistant_id=assistant_id).all()
