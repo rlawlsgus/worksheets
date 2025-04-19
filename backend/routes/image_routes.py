@@ -113,7 +113,7 @@ def upload_image():
 
         # 파일 크기 확인
         file_data = file.read()
-        if len(file_data) > 2 * 1024 * 1024:  # 2MB
+        if len(file_data) > 6 * 1024 * 1024:  # 6MB
             return jsonify({"error": "File size exceeds limit"}), 400
 
         # 파일 포인터를 다시 시작 위치로 되돌림
