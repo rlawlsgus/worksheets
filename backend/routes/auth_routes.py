@@ -32,6 +32,15 @@ def check_login():
         return redirect(url_for("auth.login"))
 
 
+@auth_bp.route("/api/auth/check", methods=["GET"])
+def check_auth():
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"authenticated": False}), 401
+
+    return jsonify({"authenticated": True, "user_id": user_id, "is_admin": is_admin()})
+
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

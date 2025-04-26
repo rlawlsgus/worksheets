@@ -11,7 +11,6 @@ export class AssistantManager {
 
   init() {
     this.initializeButtons();
-    this.initializeEditButton();
     this.loadAssistantList();
   }
 
@@ -45,6 +44,21 @@ export class AssistantManager {
       }
       window.location.href = `/images/${this.currentAssistantId}`;
     });
+
+    document.querySelector(".edit-button").addEventListener("click", () => {
+      if (!this.currentAssistantId) {
+        alert("조교를 선택해주세요.");
+        return;
+      }
+
+      window.location.href = `/profile/edit?id=${this.currentAssistantId}`;
+    });
+
+    document
+      .querySelector(".admin-edit-button")
+      ?.addEventListener("click", () => {
+        window.location.href = "/admin/profile/edit";
+      });
   }
 
   async loadAssistantList() {
@@ -182,19 +196,6 @@ export class AssistantManager {
 
       location.reload();
     }
-  }
-
-  initializeEditButton() {
-    document
-      .querySelector(".edit-button")
-      .addEventListener("click", async () => {
-        if (!this.currentAssistantId) {
-          alert("조교를 선택해주세요.");
-          return;
-        }
-
-        await this.updateAssistant();
-      });
   }
 
   async updateAssistant() {

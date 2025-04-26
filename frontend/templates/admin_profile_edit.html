@@ -1,0 +1,70 @@
+<!-- templates/admin_profile_edit.html -->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>혜성과학 조교 관리</title>
+    <link rel="stylesheet" href="../../static/css/profile_edit.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" src="../../static/js/adminProfileEdit.js"></script>
+  </head>
+  <body>
+    <header>
+      <button id="home-button" onclick="window.location.href='/'">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-arrow-left"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+      <h1>관리자 프로필 수정 <span id="admin-badge">관리자 보기</span></h1>
+    </header>
+    <div class="container">
+      <div id="loading">정보를 불러오는 중...</div>
+      <div id="error-container" class="error-message hidden"></div>
+      <div id="success-container" class="success-message hidden"></div>
+
+      <form id="profile-form" class="hidden">
+        <div class="form-group">
+          <label for="name">이름</label>
+          <input type="text" id="name" />
+        </div>
+        <div class="form-group">
+          <label for="subject">담당 과목</label>
+          <input type="text" id="subject" />
+        </div>
+        <div class="form-group">
+          <label for="password">새 비밀번호 (선택)</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="새 비밀번호를 입력하세요"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">비밀번호 확인</label>
+          <input
+            type="password"
+            id="confirm-password"
+            placeholder="비밀번호를 다시 입력하세요"
+          />
+        </div>
+        <button type="submit">수정하기</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -27,6 +27,14 @@ export const api = {
         if (!res.ok) throw new Error("Failed to get user info");
         return res.json();
       }),
+    checkAuth: () =>
+      fetch("/api/auth/check", {
+        method: "GET",
+        credentials: "include",
+      }).then((res) => {
+        if (!res.ok) throw new Error("Failed to check authentication");
+        return res.json();
+      }),
   },
   assistants: {
     getAll: () =>
