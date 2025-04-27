@@ -5,12 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>혜성과학 조교 관리</title>
-    <link rel="stylesheet" href="../static/css/profile.css" />
+    <link rel="stylesheet" href="../../static/css/profile.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script type="module" src="../static/js/profileEdit.js" defer></script>
+    <script type="module" src="../../static/js/addAssistant.js" defer></script>
   </head>
   <body>
     <header>
@@ -32,65 +32,46 @@
         </svg>
       </button>
       <h1>
-        프로필 수정
+        조교 추가
         <span id="admin-badge" class="admin-badge hidden">관리자 보기</span>
       </h1>
     </header>
     <div class="container">
-      <div id="loading">정보를 불러오는 중...</div>
       <div id="error-container" class="error-message hidden"></div>
       <div id="success-container" class="success-message hidden"></div>
 
-      <form id="profile-form" class="hidden">
+      <form id="profile-form">
         <div class="form-group">
           <label for="name">이름</label>
-          <input type="text" id="name" readonly />
+          <input type="text" id="name" />
         </div>
-        <div class="form-group">
+        <div class="form-group" id="subject-group">
           <label for="subject">담당 과목</label>
           <div id="subject">
             <label>
-              <input
-                type="radio"
-                name="subject"
-                value="화학"
-                readonly
-                disabled
-              />
+              <input type="radio" name="subject" value="화학" />
               화학
             </label>
             <label>
-              <input
-                type="radio"
-                name="subject"
-                value="생명"
-                readonly
-                disabled
-              />
+              <input type="radio" name="subject" value="생명" />
               생명
             </label>
             <label>
-              <input
-                type="radio"
-                name="subject"
-                value="지학"
-                readonly
-                disabled
-              />
+              <input type="radio" name="subject" value="지학" />
               지학
             </label>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="bank-account-group">
           <label for="bank-account">은행 계좌</label>
-          <input type="text" id="bank-account" readonly />
+          <input type="text" id="bank-account" />
         </div>
-        <div class="form-group">
+        <div class="form-group" id="salary-group">
           <label for="salary">급여</label>
-          <input type="number" id="salary" readonly />
+          <input type="number" id="salary" />
         </div>
         <div class="form-group">
-          <label for="password">새 비밀번호 (선택)</label>
+          <label for="password">새 비밀번호</label>
           <input
             type="password"
             id="password"
@@ -105,11 +86,12 @@
             placeholder="비밀번호를 다시 입력하세요"
           />
         </div>
-        <button type="submit">수정하기</button>
+        <div class="form-group">
+          <label for="admin">관리자</label>
+          <input type="checkbox" id="is-admin" />
+        </div>
+        <button type="submit">추가하기</button>
       </form>
-      <div class="form-group hidden" id="delete-user-group">
-        <button type="delete" id="delete-user-button">조교 삭제</button>
-      </div>
     </div>
   </body>
 </html>

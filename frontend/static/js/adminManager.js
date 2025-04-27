@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { CustomModal } from "./modal.js";
 
 export class AdminManager {
   constructor() {
@@ -15,8 +16,7 @@ export class AdminManager {
       const response = await api.auth.getIsAdmin();
       this.isAdmin = response.is_admin;
     } catch (error) {
-      console.error("Failed to get admin info:", error);
-      alert("관리자 정보를 불러오는 데 실패했습니다.");
+      await CustomModal.warning("관리자 정보를 불러오는 데 실패했습니다.");
     }
   }
 

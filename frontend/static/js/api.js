@@ -66,7 +66,8 @@ export const api = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => {
-        if (!res.ok) throw new Error("Failed to update assistant");
+        if (res.status === 400) throw new Error("이미 존재하는 유저입니다.");
+        if (!res.ok) throw new Error("정보를 업데이트하는 데 실패했습니다.");
         return res.json();
       }),
     create: (data) =>
@@ -76,7 +77,17 @@ export const api = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => {
-        if (!res.ok) throw new Error("Failed to create assistant");
+        if (res.status === 400) throw new Error("이미 존재하는 유저입니다.");
+        if (!res.ok) throw new Error("조교를 추가하는 데 실패했습니다.");
+        return res.json();
+      }),
+    delete: (id) =>
+      fetch(`${API_BASE_URL}/assistant/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => {
+        if (!res.ok) throw new Error("조교를 삭제하는 데 실패했습니다.");
         return res.json();
       }),
   },

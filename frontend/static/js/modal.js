@@ -163,7 +163,6 @@ export class CustomModal {
   static warning(message, options = {}) {
     const modal = new CustomModal();
     const buttons = options.buttons || [
-      { text: "취소", value: false },
       { text: "확인", value: true, primary: true },
     ];
 

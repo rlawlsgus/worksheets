@@ -1,3 +1,5 @@
+import { CustomModal } from "./modal.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   // 이미지 업로드 폼 처리
   const uploadForm = document.getElementById("upload-form");
@@ -15,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 현재 표시중인 연도와 월을 저장하는 변수
   let currentYear = new Date().getFullYear();
-  let currentMonth = new Date().getMonth(); // 0-11 (1월-12월)
+  let currentMonth = new Date().getMonth();
 
   // 페이지 로드 시 현재 월의 이미지만 표시
   initializeMonthlyView();
@@ -83,24 +85,21 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("images-by-month").appendChild(message);
     }
 
-    // 삭제 버튼 표시/숨김
     const deleteButton = document.getElementById("delete-button");
     deleteButton.style.display = visibleCount === 0 ? "none" : "block";
   }
 
-  // assistant_id 가져오기
   function getAssistantId() {
     return document.getElementById("assistant-id").value;
   }
 
-  // 이미지 업로드 처리 함수
+  // 이미지 업로드 처리
   async function handleUpload(event) {
     event.preventDefault();
 
     const formData = new FormData(uploadForm);
     const assistantId = getAssistantId();
 
-    // assistant_id를 formData에 추가
     formData.append("assistant_id", assistantId);
 
     try {
@@ -110,18 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (response.ok) {
-        alert("이미지가 성공적으로 업로드되었습니다.");
-        // 현재 페이지로 리다이렉트
+        await CustomModal.alert("이미지가 성공적으로 업로드되었습니다.");
         window.location.href = `/images/${assistantId}`;
-      } else {
-        const errorData = await response.json();
-        alert(
-          `업로드 실패: ${errorData.error || "알 수 없는 오류가 발생했습니다."}`
-        );
       }
     } catch (error) {
-      console.error("업로드 중 오류 발생:", error);
-      alert("업로드 중 오류가 발생했습니다.");
+      await CustomModal.warning("업로드 중 오류가 발생했습니다.");
     }
   }
 
@@ -134,11 +126,15 @@ document.addEventListener("DOMContentLoaded", () => {
       '.image-card[style="display: block;"] input[name="image_ids"]:checked'
     );
     if (checkedBoxes.length === 0) {
-      alert("삭제할 이미지를 선택해주세요.");
+      await CustomModal.alert("삭제할 이미지를 선택해주세요.");
       return;
     }
 
-    if (!confirm("선택한 이미지를 삭제하시겠습니까?")) {
+    const confirmDelete = await CustomModal.confirm(
+      "선택한 이미지를 삭제하시겠습니까?"
+    );
+
+    if (!confirmDelete) {
       return;
     }
 
@@ -157,18 +153,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (response.ok) {
-        alert("선택한 이미지가 성공적으로 삭제되었습니다.");
-        // 현재 페이지로 리다이렉트
+        await CustomModal.alert("선택한 이미지가 성공적으로 삭제되었습니다.");
         window.location.href = `/images/${assistantId}`;
-      } else {
-        const errorData = await response.json();
-        alert(
-          `삭제 실패: ${errorData.error || "알 수 없는 오류가 발생했습니다."}`
-        );
       }
     } catch (error) {
-      console.error("삭제 중 오류 발생:", error);
-      alert("삭제 중 오류가 발생했습니다.");
+      await CustomModal.warning("삭제 중 오류가 발생했습니다.");
     }
   }
 });

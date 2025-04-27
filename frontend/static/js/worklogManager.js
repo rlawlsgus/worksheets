@@ -66,8 +66,7 @@ export class WorklogManager {
       );
       this.renderWorkLogs(logs);
     } catch (error) {
-      console.error("Failed to load worklogs:", error);
-      alert("근무 기록을 불러오는 데 실패했습니다.");
+      await CustomModal.warning("근무 기록을 불러오는 데 실패했습니다.");
     }
   }
 
@@ -123,7 +122,7 @@ export class WorklogManager {
 
   async createWorklog() {
     if (!this.currentAssistantId) {
-      alert("조교를 선택해주세요.");
+      await CustomModal.warning("조교를 선택해주세요.");
       return;
     }
 
@@ -151,7 +150,9 @@ export class WorklogManager {
     );
 
     if (start_time >= end_time) {
-      alert("시작 시간이 종료 시간보다 늦거나 같을 수 없습니다.");
+      await CustomModal.alert(
+        "시작 시간이 종료 시간보다 늦거나 같을 수 없습니다."
+      );
     } else {
       const worklog = {
         assistant_id: this.currentAssistantId,
@@ -166,7 +167,7 @@ export class WorklogManager {
         }
         this.loadWorkLogs();
       } catch (error) {
-        alert("근무 기록 추가에 실패했습니다.");
+        await CustomModal.warning("근무 기록 추가에 실패했습니다.");
       }
     }
   }
@@ -174,19 +175,22 @@ export class WorklogManager {
   async deleteWorklogs() {
     const selectedRows = document.querySelectorAll(".table-row.selected");
     if (selectedRows.length === 0) {
-      alert("삭제할 근무 기록을 선택해주세요.");
+      await CustomModal.alert("삭제할 근무 기록을 선택해주세요.");
       return;
     }
 
-    if (confirm("선택한 근무 기록을 삭제하시겠습니까?")) {
+    const confirmed = await CustomModal.confirm(
+      "선택한 근무 기록을 삭제하시겠습니까?"
+    );
+
+    if (confirmed) {
       try {
         for (const row of selectedRows) {
           await api.worklog.delete(row.dataset.id);
         }
         this.loadWorkLogs();
       } catch (error) {
-        console.error("Failed to delete worklogs:", error);
-        alert("근무 기록 삭제에 실패했습니다.");
+        await CustomModal.warning("근무 기록 삭제에 실패했습니다.");
       }
     }
   }
@@ -205,7 +209,7 @@ export class WorklogManager {
       });
 
     if (changedRows.length === 0) {
-      const alert = await CustomModal.alert("승인할 근무 기록을 선택해주세요.");
+      await CustomModal.alert("승인할 근무 기록을 선택해주세요.");
       return;
     } else {
       const confirmed = await CustomModal.confirm(
@@ -220,10 +224,9 @@ export class WorklogManager {
     try {
       await api.worklog.check(changedRows);
       this.loadWorkLogs();
-      alert("근무 기록이 승인되었습니다.");
+      await CustomModal.alert("근무 기록이 승인되었습니다.");
     } catch (error) {
-      console.error("Failed to delete worklogs:", error);
-      alert("근무 기록 승인에 실패했습니다.");
+      await CustomModal.warning("근무 기록 승인에 실패했습니다.");
     }
   }
 
@@ -241,8 +244,8 @@ export class WorklogManager {
 
         const nameList = names.join(", ");
 
-        const confirmed = await CustomModal.warning(
-          `승인되지 않은 근무기록이 ${nameList}에 있습니다.`,
+        const confirmed = await CustomModal.confirm(
+          `승인되지 않은 근무기록이 ${nameList}에 있습니다. 승인되지 않은 근무기록은 포함되지 않습니다.`,
           {
             buttons: [
               { text: "취소", value: false },
@@ -258,8 +261,6 @@ export class WorklogManager {
 
       await this.proceedWithExport(year, month);
     } catch (error) {
-      console.error("Failed to export worklogs:", error);
-
       await CustomModal.alert("근무 기록을 내보내는 데 실패했습니다.");
     }
   }

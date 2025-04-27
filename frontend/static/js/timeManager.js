@@ -1,3 +1,5 @@
+import { CustomModal } from "./modal.js";
+
 export function initializeTimeBoxes() {
   const timeBoxes = document.querySelectorAll(".time-box");
   const dateInputs = document.querySelectorAll(".date-input");
@@ -72,7 +74,7 @@ export function initializeTimeBoxes() {
     });
 
     // 시간/분 박스 클릭 시 직접 입력
-    box.addEventListener("click", () => {
+    box.addEventListener("click", async () => {
       const currentValue = box.textContent;
       const input = prompt("값을 입력하세요:", currentValue);
 
@@ -88,7 +90,7 @@ export function initializeTimeBoxes() {
             const roundedMinute2 = newValue < 15 ? 0 : newValue < 45 ? 30 : 0;
             box.textContent = String(roundedMinute2).padStart(2, "0");
           } else {
-            alert("유효한 값을 입력해주세요!");
+            await CustomModal.warning("유효한 값을 입력해주세요!");
           }
         }
       }

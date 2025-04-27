@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { CustomModal } from "./modal.js";
 
 export class AssistantManager {
   constructor(adminManager) {
@@ -15,9 +16,6 @@ export class AssistantManager {
   }
 
   initializeButtons() {
-    document
-      .querySelector(".add-assistant-button")
-      ?.addEventListener("click", () => this.createAssistant());
     document
       .querySelector(".logout-button")
       ?.addEventListener("click", async () => {
@@ -37,27 +35,37 @@ export class AssistantManager {
       });
     });
 
-    document.querySelector(".image-button")?.addEventListener("click", () => {
-      if (!this.currentAssistantId) {
-        alert("조교를 선택해주세요.");
-        return;
-      }
-      window.location.href = `/images/${this.currentAssistantId}`;
-    });
+    document
+      .querySelector(".image-button")
+      ?.addEventListener("click", async () => {
+        if (!this.currentAssistantId) {
+          await CustomModal.warning("조교를 선택해주세요.");
+          return;
+        }
+        window.location.href = `/images/${this.currentAssistantId}`;
+      });
 
-    document.querySelector(".edit-button").addEventListener("click", () => {
-      if (!this.currentAssistantId) {
-        alert("조교를 선택해주세요.");
-        return;
-      }
+    document
+      .querySelector(".edit-button")
+      .addEventListener("click", async () => {
+        if (!this.currentAssistantId) {
+          await CustomModal.warning("조교를 선택해주세요.");
+          return;
+        }
 
-      window.location.href = `/profile/edit?id=${this.currentAssistantId}`;
-    });
+        window.location.href = `/profile/edit?id=${this.currentAssistantId}`;
+      });
 
     document
       .querySelector(".admin-edit-button")
       ?.addEventListener("click", () => {
         window.location.href = "/admin/profile/edit";
+      });
+
+    document
+      .querySelector(".add-assistant-button")
+      ?.addEventListener("click", () => {
+        window.location.href = "/admin/assistant/add";
       });
   }
 
@@ -70,8 +78,7 @@ export class AssistantManager {
         await this.selectAssistant(this.filteredAssistantList[0].id);
       }
     } catch (error) {
-      console.error("Failed to load assistants:", error);
-      alert("조교 목록을 불러오는 데 실패했습니다.");
+      await CustomModal.warning("조교 목록을 불러오는 데 실패했습니다.");
     }
   }
 
@@ -173,71 +180,7 @@ export class AssistantManager {
         this.onAssistantSelect(assistantId);
       }
     } catch (error) {
-      console.error("Failed to load assistant details:", error);
-      alert("조교 정보를 불러오는 데 실패했습니다.");
-    }
-  }
-
-  async createAssistant() {
-    const name = prompt("조교 이름을 입력하세요:");
-    if (name) {
-      const bankAccount = prompt("계좌번호를 입력하세요:");
-      const salary = prompt("급여를 입력하세요:");
-      const subject = prompt("담당 과목을 입력하세요 (화학/생명/지학):");
-      const password = prompt("비밀번호를 입력하세요:");
-
-      await api.assistants.create({
-        name,
-        password,
-        bank_account: bankAccount,
-        salary,
-        subject,
-      });
-
-      location.reload();
-    }
-  }
-
-  async updateAssistant() {
-    const assistantData = await api.assistants.get(this.currentAssistantId);
-
-    if (this.adminManager.isAdmin) {
-      const updatePassword = confirm("비밀번호를 변경하시겠습니까?");
-
-      const updateData = {};
-
-      if (updatePassword) {
-        const password = prompt("새 비밀번호:");
-        if (password) {
-          updateData.password = password;
-        }
-      }
-
-      const name = prompt("조교 이름:", assistantData.name);
-      const bankAccount = prompt("계좌번호:", assistantData.bank_account);
-      const salary = prompt("급여:", assistantData.salary);
-      const subject = prompt(
-        "담당 과목 (화학/생명/지학):",
-        assistantData.subject
-      );
-
-      if (name) updateData.name = name;
-      if (bankAccount) updateData.bank_account = bankAccount;
-      if (salary) updateData.salary = salary;
-      if (subject) updateData.subject = subject;
-
-      if (Object.keys(updateData).length > 0) {
-        await api.assistants.update(this.currentAssistantId, updateData);
-        location.reload();
-      }
-    } else {
-      const password = prompt("새 비밀번호:");
-      if (password) {
-        await api.assistants.update(this.currentAssistantId, {
-          password,
-        });
-        location.reload();
-      }
+      await CustomModal.warning("조교 정보를 불러오는 데 실패했습니다.");
     }
   }
 }

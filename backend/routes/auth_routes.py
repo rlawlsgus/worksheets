@@ -61,6 +61,7 @@ def login():
 
         user = Assistant.query.filter_by(name=username).first()
         if user and user.check_password(password):
+            session.clear()
             session.permanent = True
             session["user_id"] = user.id
             session["is_admin"] = bool(user.is_admin)
@@ -74,7 +75,7 @@ def login():
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
-    session.pop("user_id", None)
+    session.clear()
     return jsonify({"success": True, "redirect": url_for("auth.login")})
 
 
