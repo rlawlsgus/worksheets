@@ -82,3 +82,8 @@ def logout():
 @auth_bp.route("/api/is_admin", methods=["GET"])
 def send_is_admin():
     return jsonify({"is_admin": is_admin()})
+
+
+def session_clear():
+    session.clear()
+    return jsonify({"success": True})

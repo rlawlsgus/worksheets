@@ -1,7 +1,12 @@
 # backend/routes/assistant_routes.py
 from flask import Blueprint, request, jsonify, render_template
 from models.assistant import Assistant
-from routes.auth_routes import is_admin, get_current_user_id, admin_required
+from routes.auth_routes import (
+    is_admin,
+    get_current_user_id,
+    admin_required,
+    session_clear,
+)
 from database.db import db
 
 assistant_bp = Blueprint("assistant", __name__)
@@ -87,6 +92,8 @@ def delete_assistant(id):
     assistant = Assistant.query.get_or_404(id)
     db.session.delete(assistant)
     db.session.commit()
+    if assistant.is_admin:
+        session_clear()
     return jsonify({"success": True})
 
 

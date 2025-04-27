@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
             loadingElement.classList.add("hidden");
 
             form.classList.remove("hidden");
+            document
+              .getElementById("delete-user-group")
+              .classList.remove("hidden");
           })
           .catch((error) => {
             showError(error.message);
@@ -91,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .delete(id)
         .then(async () => {
           await CustomModal.alert("계정이 성공적으로 삭제되었습니다.");
-          window.location.href = "/";
+          window.location.href = "/login";
         })
         .catch((error) => {
           showError(error.message);

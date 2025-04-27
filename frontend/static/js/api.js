@@ -78,7 +78,7 @@ export const api = {
         body: JSON.stringify(data),
       }).then((res) => {
         if (res.status === 400) throw new Error("이미 존재하는 유저입니다.");
-        if (!res.ok) throw new Error("조교를 추가하는 데 실패했습니다.");
+        if (!res.ok) throw new Error("유저를 추가하는 데 실패했습니다.");
         return res.json();
       }),
     delete: (id) =>
@@ -87,7 +87,7 @@ export const api = {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       }).then((res) => {
-        if (!res.ok) throw new Error("조교를 삭제하는 데 실패했습니다.");
+        if (!res.ok) throw new Error("유저를 삭제하는 데 실패했습니다.");
         return res.json();
       }),
   },
