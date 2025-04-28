@@ -70,7 +70,9 @@ def update_assistant(id):
     assistant = Assistant.query.get_or_404(id)
     data = request.json
 
-    existing_assistant = Assistant.query.filter_by(name=data["name"]).first()
+    existing_assistant = Assistant.query.filter(
+        Assistant.id != id, Assistant.name == data["name"]
+    ).first()
     if existing_assistant:
         return jsonify({"error": "An assistant with this name already exists."}), 400
 
