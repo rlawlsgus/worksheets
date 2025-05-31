@@ -128,7 +128,11 @@ def get_unchecked_logs(year, month):
 @worklog_bp.route("/api/worklogs/export/<int:year>/<int:month>", methods=["GET"])
 @admin_required
 def export_worklog(year, month):
-    assistants = Assistant.query.filter_by(is_admin=False).all()
+    assistants = (
+        Assistant.query.filter_by(is_admin=False)
+        .filter(Assistant.subject != "퇴직")
+        .all()
+    )
 
     wb = Workbook()
 
