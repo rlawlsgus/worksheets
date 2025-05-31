@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 - 택시비 이미지 관리</title>
+    <link rel="stylesheet" href="../../static/css/images.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" src="../../static/js/admin_images.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>택시비 이미지 관리</h1>
+      <button id="home-button" onclick="window.location.href='/'">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-arrow-left"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+    </header>
+    <main>
+      <div class="month-navigation">
+        <button id="prev-month" class="month-nav-button">&lt; 이전 월</button>
+        <h2 id="current-month-display">년 월</h2>
+        <button id="next-month" class="month-nav-button">다음 월 &gt;</button>
+      </div>
+
+      <div id="image-container">
+        <form id="bulk-delete-form">
+          <div id="images-by-month">
+            {% if images %} {% for image in images %}
+            <div class="image-card" data-date="{{ image.date }}">
+              <input
+                type="checkbox"
+                name="image_ids"
+                value="{{ image.id }}"
+                class="image-checkbox"
+              />
+              <img
+                src="{{ image.signed_url or image.url }}"
+                alt="{{ image.filename }}"
+              />
+              <div class="image-info">
+                <p><strong>조교:</strong> {{ image.assistant_name }}</p>
+                <p><strong>날짜:</strong> {{ image.date }}</p>
+              </div>
+            </div>
+            {% endfor %} {% else %}
+            <p id="no-images-message">등록된 이미지가 없습니다.</p>
+            {% endif %}
+          </div>
+          <button type="submit" id="delete-button">선택된 이미지 삭제</button>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      const allImages = JSON.parse("{{ images|tojson }}");
+    </script>
+  </body>
+</html>

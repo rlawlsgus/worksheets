@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, send_file
 from models.image import Image
 from models.assistant import Assistant
 from routes.auth_routes import is_admin, get_current_user_id
@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 import uuid
+import io
 
 image_bp = Blueprint("image_routes", __name__)
 
@@ -181,4 +182,93 @@ def delete_images():
         return jsonify({"message": "Images deleted successfully"}), 200
     except Exception as e:
         db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@image_bp.route("/admin/images/", methods=["GET"])
+def get_all_images():
+    try:
+        if not is_admin():
+            return jsonify({"error": "Unauthorized access"}), 403
+
+        # 모든 이미지를 조회하고 조교 이름 정보를 포함
+        images = (
+            db.session.query(Image, Assistant.name.label("assistant_name"))
+            .join(Assistant, Image.assistant_id == Assistant.id)
+            .order_by(Image.date.desc())
+            .all()
+        )
+
+        # 서명된 URL을 포함한 이미지 정보 생성
+        result = []
+        for image, assistant_name in images:
+            image_data = image.to_dict()
+            image_data["assistant_name"] = assistant_name
+            signed_url = generate_presigned_url(image)
+            if signed_url:
+                image_data["signed_url"] = signed_url
+            result.append(image_data)
+
+        return render_template(
+            "admin_images.html",
+            images=result,
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@image_bp.route("/api/admin/image_delete", methods=["POST"])
+def admin_delete_images():
+    try:
+        if not is_admin():
+            return jsonify({"error": "Unauthorized access"}), 403
+
+        image_ids = request.form.getlist("image_ids")
+        if not image_ids:
+            return jsonify({"error": "No image IDs provided"}), 400
+
+        images = Image.query.filter(Image.id.in_(image_ids)).all()
+
+        for image in images:
+            try:
+                s3_client.delete_object(
+                    Bucket=S3_BUCKET, Key=f"taxi_images/{image.filename}"
+                )
+            except Exception as s3_error:
+                print(f"Error deleting from S3: {str(s3_error)}")
+
+            db.session.delete(image)
+        db.session.commit()
+
+        return jsonify({"message": "Images deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@image_bp.route("/api/image_download/<int:image_id>", methods=["GET"])
+def download_image(image_id):
+    try:
+        image = Image.query.get(image_id)
+        if not image:
+            return jsonify({"error": "Image not found"}), 404
+
+        # S3에서 이미지 가져오기
+        try:
+            response = s3_client.get_object(
+                Bucket=S3_BUCKET, Key=f"taxi_images/{image.filename}"
+            )
+            file_stream = response["Body"].read()
+
+            return send_file(
+                io.BytesIO(file_stream),
+                mimetype=response["ContentType"],
+                as_attachment=True,
+                download_name=image.filename,
+            )
+        except Exception as s3_error:
+            print(f"Error downloading from S3: {str(s3_error)}")
+            return jsonify({"error": "Failed to download image"}), 500
+
+    except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -38,6 +38,11 @@ export class AssistantManager {
     document
       .querySelector(".image-button")
       ?.addEventListener("click", async () => {
+        if (this.adminManager.isAdmin) {
+          window.location.href = "/admin/images/";
+          return;
+        }
+
         if (!this.currentAssistantId) {
           await CustomModal.warning("조교를 선택해주세요.");
           return;

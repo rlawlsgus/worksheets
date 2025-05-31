@@ -1,10 +1,6 @@
 import { CustomModal } from "./modal.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 이미지 업로드 폼 처리
-  const uploadForm = document.getElementById("upload-form");
-  uploadForm.addEventListener("submit", handleUpload);
-
   // 이미지 삭제 폼 처리
   const deleteForm = document.getElementById("bulk-delete-form");
   deleteForm.addEventListener("submit", handleDelete);
@@ -95,34 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteButton.style.display = visibleCount === 0 ? "none" : "block";
   }
 
-  function getAssistantId() {
-    return document.getElementById("assistant-id").value;
-  }
-
-  // 이미지 업로드 처리
-  async function handleUpload(event) {
-    event.preventDefault();
-
-    const formData = new FormData(uploadForm);
-    const assistantId = getAssistantId();
-
-    formData.append("assistant_id", assistantId);
-
-    try {
-      const response = await fetch("/api/image_upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        await CustomModal.alert("이미지가 성공적으로 업로드되었습니다.");
-        window.location.href = `/images/${assistantId}`;
-      }
-    } catch (error) {
-      await CustomModal.warning("업로드 중 오류가 발생했습니다.");
-    }
-  }
-
   // 이미지 삭제 처리 함수
   async function handleDelete(event) {
     event.preventDefault();
@@ -149,18 +117,15 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("image_ids", checkbox.value);
     });
 
-    const assistantId = getAssistantId();
-    formData.append("assistant_id", assistantId);
-
     try {
-      const response = await fetch("/api/image_delete", {
+      const response = await fetch("/api/admin/image_delete", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         await CustomModal.alert("선택한 이미지가 성공적으로 삭제되었습니다.");
-        window.location.href = `/images/${assistantId}`;
+        window.location.reload();
       }
     } catch (error) {
       await CustomModal.warning("삭제 중 오류가 발생했습니다.");
@@ -172,7 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const img = event.target;
     const imageCard = img.closest(".image-card");
     const imageInfo = imageCard.querySelector(".image-info");
-    const date = imageInfo.querySelector("p").textContent;
+    const assistantName = imageInfo.querySelector("p:first-child").textContent;
+    const date = imageInfo.querySelector("p:last-child").textContent;
 
     const container = document.createElement("div");
     container.className = "image-modal-content";
@@ -184,7 +150,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const infoDiv = document.createElement("div");
     infoDiv.className = "image-modal-info";
-    infoDiv.innerHTML = `<p>${date}</p>`;
+    infoDiv.innerHTML = `
+      <p>${assistantName}</p>
+      <p>${date}</p>
+    `;
 
     const actionsDiv = document.createElement("div");
     actionsDiv.className = "image-modal-actions";
