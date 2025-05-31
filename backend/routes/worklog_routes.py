@@ -111,9 +111,11 @@ def get_unchecked_logs(year, month):
     unchecked_logs = (
         db.session.query(WorkLog, Assistant.name.label("assistant_name"))
         .join(Assistant, WorkLog.assistant_id == Assistant.id)
-        .filter(WorkLog.date >= start_date)
-        .filter(WorkLog.date < end_date)
-        .filter(WorkLog.checked == False)
+        .filter(
+            WorkLog.date >= start_date,
+            WorkLog.date < end_date,
+            WorkLog.checked == False,
+        )
         .all()
     )
 
@@ -128,11 +130,9 @@ def get_unchecked_logs(year, month):
 @worklog_bp.route("/api/worklogs/export/<int:year>/<int:month>", methods=["GET"])
 @admin_required
 def export_worklog(year, month):
-    assistants = (
-        Assistant.query.filter_by(is_admin=False)
-        .filter(Assistant.subject != "퇴직")
-        .all()
-    )
+    assistants = Assistant.query.filter(
+        Assistant.subject != "퇴직", Assistant.is_admin == False
+    ).all()
 
     wb = Workbook()
 
@@ -198,8 +198,8 @@ def export_worklog(year, month):
                 WorkLog.assistant_id == assistant.id,
                 extract("year", WorkLog.date) == year,
                 extract("month", WorkLog.date) == month,
+                WorkLog.checked == True,
             )
-            .filter(WorkLog.checked == True)
             .order_by(WorkLog.date)
             .all()
         )
