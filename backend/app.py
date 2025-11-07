@@ -1,12 +1,19 @@
 # backend/app.py
+import sys
+import os
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from flask import Flask
 from flask_cors import CORS
-from database.db import db
-from routes.assistant_routes import assistant_bp
-from routes.worklog_routes import worklog_bp
-from routes.image_routes import image_bp
-from routes.main_routes import main_bp
-from routes.auth_routes import auth_bp, check_login
+from flask_migrate import Migrate
+from backend.database.db import db
+from backend.routes.assistant_routes import assistant_bp
+from backend.routes.worklog_routes import worklog_bp
+from backend.routes.image_routes import image_bp
+from backend.routes.main_routes import main_bp
+from backend.routes.auth_routes import auth_bp, check_login
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
@@ -39,6 +46,7 @@ def create_app():
 
     # 데이터베이스 초기화
     db.init_app(app)
+    Migrate(app, db)
 
     # 블루프린트에 check_login 함수를 before_request로 등록
     for blueprint in [main_bp, assistant_bp, worklog_bp]:
@@ -52,14 +60,20 @@ def create_app():
     app.register_blueprint(image_bp)
 
     # 데이터베이스 생성
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
 
     CORS(app, supports_credentials=True)
     return app
 
 
 app = create_app()
+
+
+@app.before_request
+def create_tables():
+    db.create_all()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

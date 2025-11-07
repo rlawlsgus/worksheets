@@ -96,6 +96,10 @@ export const api = {
       fetch(`${API_BASE_URL}/worklogs/${assistantId}/${year}/${month}`).then(
         (res) => res.json()
       ),
+    getTotalHours: (assistantId) =>
+      fetch(`${API_BASE_URL}/worklogs/total_hours/${assistantId}`).then((res) =>
+        res.json()
+      ),
     create: (data) =>
       fetch(`${API_BASE_URL}/worklog`, {
         method: "POST",

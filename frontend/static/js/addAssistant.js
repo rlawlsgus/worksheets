@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isAdmin) {
       const name = document.getElementById("name").value;
+      const phoneNumber = document.getElementById("phone-number").value;
       const subject = document.querySelector(
         "input[name='subject']:checked"
       )?.value;
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (is_admin && !name) {
         showError("모든 필드를 입력해주세요.");
         return;
-      } else if (!is_admin && (!name || !subject || !bankAccount || !salary)) {
+      } else if (!is_admin && (!name || !subject || !bankAccount || !salary || !phoneNumber)) {
         showError("모든 필드를 입력해주세요.");
         return;
       }
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       newUser.name = name;
+      newUser.phone_number = phoneNumber;
       newUser.subject = subject || null;
       newUser.bank_account = bankAccount || null;
       newUser.salary = parseInt(salary) || null;
@@ -83,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showSuccess("유저가 추가되었습니다.");
         // 필드 초기화
         document.getElementById("name").value = "";
+        document.getElementById("phone-number").value = "";
         document
           .querySelectorAll("input[name='subject']")
           .forEach((radio) => (radio.checked = false));

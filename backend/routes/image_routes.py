@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, send_file
-from models.image import Image
-from models.assistant import Assistant
-from routes.auth_routes import is_admin, get_current_user_id
-from database.db import db
+from backend.models.image import Image
+from backend.models.assistant import Assistant
+from backend.routes.auth_routes import is_admin, get_current_user_id
+from backend.database.db import db
 import boto3
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv

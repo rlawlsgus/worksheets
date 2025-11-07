@@ -1,13 +1,13 @@
 # backend/routes/assistant_routes.py
 from flask import Blueprint, request, jsonify, render_template
-from models.assistant import Assistant
-from routes.auth_routes import (
+from backend.models.assistant import Assistant
+from backend.routes.auth_routes import (
     is_admin,
     get_current_user_id,
     admin_required,
     session_clear,
 )
-from database.db import db
+from backend.database.db import db
 
 assistant_bp = Blueprint("assistant", __name__)
 
@@ -46,6 +46,7 @@ def add_assistant():
     data = request.json
     assistant = Assistant(
         name=data["name"],
+        phone_number=data["phone_number"],
         is_admin=data["is_admin"],
         bank_account=data["bank_account"],
         salary=data["salary"],
@@ -78,6 +79,7 @@ def update_assistant(id):
 
     if is_admin():
         assistant.name = data.get("name", assistant.name)
+        assistant.phone_number = data.get("phone_number", assistant.phone_number)
         assistant.bank_account = data.get("bank_account", assistant.bank_account)
         assistant.salary = data.get("salary", assistant.salary)
         assistant.subject = data.get("subject", assistant.subject)
@@ -124,6 +126,7 @@ def get_assistant(id):
         {
             "id": assistant.id,
             "name": assistant.name,
+            "phone_number": assistant.phone_number,
             "bank_account": assistant.bank_account,
             "salary": assistant.salary,
             "subject": assistant.subject,

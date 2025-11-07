@@ -9,7 +9,7 @@ from flask import (
     jsonify,
 )
 from functools import wraps
-from models.assistant import Assistant
+from backend.models.assistant import Assistant
 
 auth_bp = Blueprint("auth", __name__)
 

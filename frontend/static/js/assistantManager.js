@@ -175,7 +175,9 @@ export class AssistantManager {
 
       document.querySelector(".profile-details h2").textContent =
         assistantData.name;
-      document.querySelector(".profile-details p").textContent =
+      document.querySelector(".profile-details .phone-number").textContent =
+        assistantData.phone_number;
+      document.querySelector(".profile-details p:not(.phone-number)").textContent =
         assistantData.bank_account;
       document.querySelector(".profile-image").textContent =
         assistantData.subject;

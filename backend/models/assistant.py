@@ -1,5 +1,5 @@
 # backend/models/assistant.py
-from database.db import db
+from backend.database.db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -7,6 +7,7 @@ class Assistant(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(100))
     password_hash = db.Column(db.String(256), nullable=False)
     bank_account = db.Column(db.String(100))
     salary = db.Column(db.Integer)
@@ -25,6 +26,7 @@ class Assistant(db.Model):
             "is_admin": self.is_admin,
             "id": self.id,
             "name": self.name,
+            "phone_number": self.phone_number,
             "password_hash": self.password_hash,
             "bank_account": self.bank_account,
             "salary": self.salary,

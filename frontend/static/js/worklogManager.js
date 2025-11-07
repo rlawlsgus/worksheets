@@ -115,8 +115,18 @@ export class WorklogManager {
       tableBody.appendChild(row);
     });
 
+    const thisMonthTotalHoursDiv = document.querySelector(
+      "#this-month-total-work-time-value"
+    );
     const totalHoursDiv = document.querySelector(".total-work-time-value");
-    const totalHours = logs.reduce((acc, log) => acc + log.work_hours, 0);
+
+    const totalHours = await api.worklog.getTotalHours(this.currentAssistantId);
+    const thisMonthTotalHours = logs.reduce(
+      (acc, log) => acc + log.work_hours,
+      0
+    );
+
+    thisMonthTotalHoursDiv.textContent = convertToTime(thisMonthTotalHours);
     totalHoursDiv.textContent = convertToTime(totalHours);
   }
 

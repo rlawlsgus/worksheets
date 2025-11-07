@@ -5,11 +5,11 @@ from openpyxl.styles import Alignment, PatternFill, Font, Border, Side
 from sqlalchemy import extract
 from io import BytesIO
 from datetime import datetime, date
-from models.worklog import WorkLog
-from models.assistant import Assistant
-from routes.auth_routes import is_admin, get_current_user_id, admin_required
-from utils.time_calculator import calculate_work_hours
-from database.db import db
+from backend.models.worklog import WorkLog
+from backend.models.assistant import Assistant
+from backend.routes.auth_routes import is_admin, get_current_user_id, admin_required
+from backend.utils.time_calculator import calculate_work_hours
+from backend.database.db import db
 
 
 worklog_bp = Blueprint("worklog", __name__)
@@ -75,6 +75,20 @@ def get_monthly_worklogs(assistant_id, year, month):
             for log in worklogs
         ]
     )
+
+
+@worklog_bp.route("/api/worklogs/total_hours/<int:assistant_id>", methods=["GET"])
+def get_total_work_hours(assistant_id):
+    if not is_admin() and assistant_id != get_current_user_id():
+        return jsonify({"message": "Forbidden"}), 403
+
+    total_hours = (
+        db.session.query(db.func.sum(WorkLog.work_hours))
+        .filter(WorkLog.assistant_id == assistant_id)
+        .scalar()
+    )
+
+    return jsonify(total_hours or 0)
 
 
 @worklog_bp.route("/api/worklog/<int:id>", methods=["DELETE"])

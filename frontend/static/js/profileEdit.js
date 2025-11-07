@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!assistant) return;
 
         document.getElementById("name").value = assistant.name;
+        document.getElementById("phone-number").value = assistant.phone_number;
         document.querySelectorAll('input[name="subject"]').forEach((radio) => {
           if (radio.value === assistant.subject) {
             radio.checked = true;
@@ -48,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (is_admin) {
           document.getElementById("name").removeAttribute("readonly");
+          document.getElementById("phone-number").removeAttribute("readonly");
           document
             .querySelectorAll('input[name="subject"]')
             .forEach((radio) => {
@@ -80,18 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isAdmin) {
       const name = document.getElementById("name").value;
+      const phoneNumber = document.getElementById("phone-number").value;
       const subject = document.querySelector(
         "input[name='subject']:checked"
       )?.value;
       const bankAccount = document.getElementById("bank-account").value;
       const salary = document.getElementById("salary").value;
 
-      if (!name || !subject || !bankAccount || !salary) {
+      if (!name || !subject || !bankAccount || !salary || !phoneNumber) {
         showError("모든 필드를 입력해주세요.");
         return;
       }
 
       updateData.name = name;
+      updateData.phone_number = phoneNumber;
       updateData.subject = subject;
       updateData.bank_account = bankAccount;
       updateData.salary = parseInt(salary);

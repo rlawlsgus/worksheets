@@ -343,9 +343,14 @@ body {
   font-size: 14px;
 }
 
-.total-work-time-value {
+.total-work-time-value .this-month-total-work-time-value {
   font-size: 16px;
   color: #000;
+}
+
+.all-time-total {
+  border-top: none;
+  padding-top: 4px;
 }
 
 /* 시작 시간 */
