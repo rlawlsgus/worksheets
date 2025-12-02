@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const successContainer = document.getElementById("success-container");
   const adminBadge = document.getElementById("admin-badge");
   let isAdmin = false;
+  let initialAssistantData = {};
 
   // 사용자 및 관리자 확인
   function initializeProfileEdit() {
@@ -37,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(([assistant, is_admin]) => {
         if (!assistant) return;
 
+        initialAssistantData = { ...assistant };
+
         document.getElementById("name").value = assistant.name;
         document.getElementById("phone-number").value = assistant.phone_number;
         document.querySelectorAll('input[name="subject"]').forEach((radio) => {
@@ -58,6 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           document.getElementById("bank-account").removeAttribute("readonly");
           document.getElementById("salary").removeAttribute("readonly");
+        } else {
+          document.getElementById("phone-number").removeAttribute("readonly");
         }
 
         loadingElement.classList.add("hidden");
@@ -78,7 +83,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
 
+    if (password && password !== confirmPassword) {
+      showError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
     const updateData = {};
+    let hasChanges = false;
 
     if (isAdmin) {
       const name = document.getElementById("name").value;
@@ -94,20 +105,46 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      updateData.name = name;
-      updateData.phone_number = phoneNumber;
-      updateData.subject = subject;
-      updateData.bank_account = bankAccount;
-      updateData.salary = parseInt(salary);
-    }
-    if (password && password !== confirmPassword) {
-      showError("비밀번호가 일치하지 않습니다.");
-      return;
-    } else if (password) {
-      updateData.password = password;
+      // Check for changes for admin
+      if (name !== initialAssistantData.name) {
+        updateData.name = name;
+        hasChanges = true;
+      }
+      if (phoneNumber !== initialAssistantData.phone_number) {
+        updateData.phone_number = phoneNumber;
+        hasChanges = true;
+      }
+      if (subject !== initialAssistantData.subject) {
+        updateData.subject = subject;
+        hasChanges = true;
+      }
+      if (bankAccount !== initialAssistantData.bank_account) {
+        updateData.bank_account = bankAccount;
+        hasChanges = true;
+      }
+      if (salary !== initialAssistantData.salary.toString()) {
+        updateData.salary = parseInt(salary);
+        hasChanges = true;
+      }
+    } else {
+      const phoneNumber = document.getElementById("phone-number").value;
+      if (!phoneNumber) {
+        showError("전화번호를 입력해주세요.");
+        return;
+      }
+
+      if (phoneNumber !== initialAssistantData.phone_number) {
+        updateData.phone_number = phoneNumber;
+        hasChanges = true;
+      }
     }
 
-    if (Object.keys(updateData).length === 0) {
+    if (password) {
+      updateData.password = password;
+      hasChanges = true;
+    }
+
+    if (!hasChanges) {
       showError("변경할 내용이 없습니다.");
       return;
     }
@@ -116,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .update(id, updateData)
       .then(() => {
         showSuccess("프로필이 성공적으로 업데이트되었습니다.");
+        // Re-initialize to update the initialAssistantData and form fields
         initializeProfileEdit();
         document.getElementById("password").value = "";
         document.getElementById("confirm-password").value = "";

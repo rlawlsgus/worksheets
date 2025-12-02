@@ -71,20 +71,27 @@ def update_assistant(id):
     assistant = Assistant.query.get_or_404(id)
     data = request.json
 
-    existing_assistant = Assistant.query.filter(
-        Assistant.id != id, Assistant.name == data["name"]
-    ).first()
-    if existing_assistant:
-        return jsonify({"error": "An assistant with this name already exists."}), 400
-
     if is_admin():
+        if "name" in data and data["name"] != assistant.name:
+            existing_assistant = Assistant.query.filter(
+                Assistant.id != id, Assistant.name == data["name"]
+            ).first()
+            if existing_assistant:
+                return (
+                    jsonify({"error": "An assistant with this name already exists."}),
+                    400,
+                )
         assistant.name = data.get("name", assistant.name)
         assistant.phone_number = data.get("phone_number", assistant.phone_number)
         assistant.bank_account = data.get("bank_account", assistant.bank_account)
         assistant.salary = data.get("salary", assistant.salary)
         assistant.subject = data.get("subject", assistant.subject)
-    if "password" in data:
-        assistant.set_password(data.get("password", assistant.password_hash))
+        if "password" in data and data["password"]:
+            assistant.set_password(data["password"])
+    else:
+        assistant.phone_number = data.get("phone_number", assistant.phone_number)
+        if "password" in data and data["password"]:
+            assistant.set_password(data["password"])
 
     db.session.commit()
     return jsonify({"success": True})
